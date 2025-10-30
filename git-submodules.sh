@@ -12,8 +12,8 @@
 # ==============================================================
 
 # --------------------- CONFIGURATION ---------------------
-GITHUB_USER="ropean"   # <<<--- CHANGE THIS
-SUBMODULES_DIR="sites" # Submodule root (change if needed)
+GITHUB_USER="ropean" # <<<--- CHANGE THIS
+SUBMODULES_DIR="apps"  # Submodule root (change if needed)
 GITMODULES_FILE=".gitmodules"
 # ---------------------------------------------------------
 
@@ -62,6 +62,64 @@ check_gh() {
 	return 0
 }
 
+# --------------------- CHECK & UPDATE SUBMODULES_DIR --------------------
+check_and_update_submodules_dir() {
+	if [[ -d "$SUBMODULES_DIR" ]]; then
+		return 0
+	fi
+
+	p_warn "Directory '$SUBMODULES_DIR' does not exist!"
+	echo -n "Enter the submodules directory path: "
+	read -r new_dir
+
+	# Trim whitespace
+	new_dir=$(echo "$new_dir" | xargs)
+
+	if [[ -z "$new_dir" ]]; then
+		p_error "Directory path cannot be empty"
+		return 1
+	fi
+
+	if [[ ! -d "$new_dir" ]]; then
+		echo -n "Directory '$new_dir' doesn't exist. Create it? [y/N]: "
+		read -r create_choice
+		case "$create_choice" in
+		y | Y)
+			if mkdir -p "$new_dir"; then
+				p_success "Created directory: $new_dir"
+			else
+				p_error "Failed to create directory: $new_dir"
+				return 1
+			fi
+			;;
+		*)
+			p_error "Operation cancelled"
+			return 1
+			;;
+		esac
+	fi
+
+	# Update the script itself
+	local script_path="${BASH_SOURCE[0]}"
+	if [[ -w "$script_path" ]]; then
+		p_info "Updating SUBMODULES_DIR in script..."
+		if sed -i.bak "s|^SUBMODULES_DIR=\".*\"|SUBMODULES_DIR=\"$new_dir\"|" "$script_path"; then
+			p_success "Script updated! SUBMODULES_DIR is now: $new_dir"
+			# Update the current session variable
+			SUBMODULES_DIR="$new_dir"
+			rm -f "${script_path}.bak"
+		else
+			p_error "Failed to update script"
+			return 1
+		fi
+	else
+		p_warn "Cannot write to script file. Using '$new_dir' for this session only."
+		SUBMODULES_DIR="$new_dir"
+	fi
+
+	return 0
+}
+
 # --------------------- OPTIONAL .gitmodules UPDATE --------------------
 update_gitmodules() {
 	p_info "Upserting missing entries into $GITMODULES_FILE..."
@@ -76,7 +134,7 @@ update_gitmodules() {
 		local url="git@github.com:$GITHUB_USER/$name.git"
 
 		if grep -q "path = $path" "$GITMODULES_FILE" 2>/dev/null; then
-			p_dim "Entry for $path already exists in $GITMODULES_FILE – skipping"
+			p_dim "Entry for $path already exists in $GITMODULES_FILE — skipping"
 			continue
 		fi
 
@@ -105,7 +163,7 @@ init_all_submodules() {
 		local name
 		name=$(basename "$dir")
 		if (cd "$dir" && git rev-parse --is-inside-work-tree &>/dev/null); then
-			p_dim "[$name] already a git repo – skipping"
+			p_dim "[$name] already a git repo — skipping"
 			continue
 		fi
 		if (cd "$dir" && git init -q); then
@@ -162,7 +220,7 @@ create_github_repos() {
 		if [[ -z "${exists_map[$name]}" ]]; then
 			to_create+=("$name")
 		else
-			p_dim "Repo '$name' already exists – skipping"
+			p_dim "Repo '$name' already exists — skipping"
 		fi
 	done
 
@@ -301,10 +359,15 @@ fix_git_remote() {
 
 # --------------------- MAIN MENU --------------------
 main_menu() {
+	# Check if SUBMODULES_DIR exists before showing menu
+	check_and_update_submodules_dir || exit 1
+
 	while true; do
 		clear
 		p_header
 		p_title
+		p_header
+		echo -e "${DIM}Current submodules directory: ${CYAN}$SUBMODULES_DIR${NC}"
 		p_header
 		echo "1) Upsert .gitmodules"
 		echo "2) Create GitHub repos"
@@ -323,14 +386,14 @@ main_menu() {
 		2) create_github_repos ;;
 		3) run_in_all ;;
 		4) show_help ;;
-		5) run_in_all ;; # todo: call run_in_all with git init
-		6) run_in_all ;; # todo: call run_in_all with git pull
+		5) run_in_all "git init" ;;
+		6) run_in_all "git pull" ;;
 		7) fix_git_remote ;;
 		0)
 			echo -e "${SUCCESS}Goodbye!${NC}"
 			exit 0
 			;;
-		*) p_error "Invalid option – try again" ;;
+		*) p_error "Invalid option — try again" ;;
 		esac
 
 		echo -e "\n${YELLOW}Press ENTER to continue…${NC}"
