@@ -280,7 +280,8 @@ run_in_all() {
 		if (cd "$dir" &&
 			eval "args=($cmd)" &&
 			[ ${#args[@]} -gt 0 ] &&
-			"${args[@]}" >/dev/null 2>&1); then
+			"${args[@]}"); then
+			# "${args[@]}" >/dev/null 2>&1); then
 			((ok++))
 			p_success "$name"
 		else
