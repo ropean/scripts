@@ -12,8 +12,8 @@
 # ==============================================================
 
 # --------------------- CONFIGURATION ---------------------
-GITHUB_USER="ropean" # <<<--- CHANGE THIS
-SUBMODULES_DIR="apps"  # Submodule root (change if needed)
+GITHUB_USER="ropean"  # <<<--- CHANGE THIS
+SUBMODULES_DIR="apps" # Submodule root (change if needed)
 GITMODULES_FILE=".gitmodules"
 # ---------------------------------------------------------
 
