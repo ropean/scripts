@@ -264,12 +264,16 @@ create_github_repos() {
 
 # --------------------- 5. RUN COMMAND IN ALL --------------------
 run_in_all() {
-	echo -n "Enter command to run in every submodule: "
-	read -r cmd
-	[[ -z "$cmd" ]] && {
-		p_error "Command cannot be empty"
-		return 1
-	}
+	local cmd="$*"
+
+	if [[ -z "$cmd" ]]; then
+		echo -n "Enter command to run in every submodule: "
+		read -r cmd
+		[[ -z "$cmd" ]] && {
+			p_error "Command cannot be empty"
+			return 1
+		}
+	fi
 
 	p_run "$cmd"
 	local total=0 ok=0 fail=() args
@@ -376,7 +380,8 @@ main_menu() {
 		echo "4) Show submodule commands"
 		echo "5) Git init all submodules"
 		echo "6) Git pull all submodules"
-		echo "7) Fix git remote for all submodules"
+		echo "7) Git status all  submodules"
+		echo "9) Fix git remote for all submodules"
 		echo "0) Exit"
 		echo -e "${PURPLE}----------------------------------------${NC}"
 		echo -n "Choose [0-7]: "
@@ -387,9 +392,10 @@ main_menu() {
 		2) create_github_repos ;;
 		3) run_in_all ;;
 		4) show_help ;;
-		5) run_in_all "git init" ;;
-		6) run_in_all "git pull" ;;
-		7) fix_git_remote ;;
+		5) run_in_all git init ;;
+		6) run_in_all git pull ;;
+		7) run_in_all git status ;;
+		9) fix_git_remote ;;
 		0)
 			echo -e "${SUCCESS}Goodbye!${NC}"
 			exit 0
