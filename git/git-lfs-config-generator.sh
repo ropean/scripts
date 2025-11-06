@@ -1,7 +1,11 @@
 #!/bin/bash
-# auther: ropean
-# date: 2025-10-30
 
+# @title Git LFS Config Generator
+# @description Generates smart .gitattributes configuration for Git LFS based on file sizes
+# @author ropean
+# @version 1.0.0
+# @date 2025-10-30
+#
 # SYNOPSIS
 #     Generates a smart .gitattributes configuration for Git LFS based on file sizes in a repository.
 #

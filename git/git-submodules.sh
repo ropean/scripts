@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
-# auther: ropean
-# date: 2025-10-30
 
+# @title Git Submodules Management Script
+# @description Complete toolkit for managing Git submodules with bulk operations and GitHub integration
+# @author ropean
+# @version 1.0.0
+# @date 2025-10-30
+#
 # ==============================================================
 # Git Submodules Management Script (English)
 # --------------------------------------------------------------
@@ -10,6 +14,9 @@
 #  • Optional .gitmodules update
 #  • Init / Push / Pull / Run-in-all with clear feedback
 # ==============================================================
+#
+# @requires gh (GitHub CLI)
+# @see https://cli.github.com/
 
 # --------------------- CONFIGURATION ---------------------
 GITHUB_USER="ropean"  # <<<--- CHANGE THIS

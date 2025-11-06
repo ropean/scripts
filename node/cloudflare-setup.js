@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 
 /**
- * Cloudflare Workers Environment Setup Script
+ * @title Cloudflare Workers Environment Setup Script
+ * @description Automated setup tool for Cloudflare Workers resources (KV, R2, D1, Secrets)
+ * @version 1.0.0
+ * @author ropean
  *
  * This script automates the setup of Cloudflare Workers resources including:
  * - KV Namespaces (Key-Value storage)
  * - R2 Buckets (Object storage)
  * - D1 Databases (SQL database)
  * - JWT Secrets (Authentication)
+ *
+ * @example
+ * node cloudflare-setup.js
+ * node cloudflare-setup.js --env production
+ *
+ * @requires wrangler
  *
  * Usage:
  *   node scripts/cloudflare-setup.js                        # local (default) - creates .dev.vars
