@@ -98,8 +98,17 @@ function extractMetadata(filePath) {
   for (let i = 0; i < Math.min(100, lines.length); i++) {
     const line = lines[i].trim();
 
+    // Skip shebang lines
+    if (line.startsWith('#!')) {
+      continue;
+    }
+
     // Detect start of header block
-    if (!inHeaderBlock && (line.startsWith('/**') || line.startsWith('"""') || line.startsWith('#'))) {
+    // For shell scripts, look for comment lines with content (not just #)
+    const isShellComment = line.startsWith('#') && line.length > 1 && !line.startsWith('#!/');
+    const isJSDocComment = line.startsWith('/**') || line.startsWith('"""');
+
+    if (!inHeaderBlock && (isJSDocComment || isShellComment)) {
       inHeaderBlock = true;
       headerLines.push(line);
       continue;

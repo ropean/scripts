@@ -8,9 +8,11 @@ Node.js utilities, package management, deployment tools, and infrastructure scri
 
 ## Available Scripts (1)
 
-### [!/usr/bin/env node](./cloudflare-setup)
+### [Cloudflare Workers Environment Setup Script](./cloudflare-setup)
 
-No description available
+Automated setup tool for Cloudflare Workers resources (KV, R2, D1, Secrets)
+
+*By ropean*
 
 **File**: `cloudflare-setup.js`
 
