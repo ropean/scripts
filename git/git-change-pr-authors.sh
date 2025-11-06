@@ -2,10 +2,10 @@
 #
 # @title Git Change PR Authors
 # @description Modify author and committer information for commits in a PR branch
-# @author Wei Guo
+# @author Ropean
 # @version 2.0.0
 # @license MIT
-# @repository https://github.com/your-repo/git-scripts
+# @repository https://github.com/ropean/scripts
 # @requires git 2.0+, bash 4.0+
 # @note This script rewrites Git history! Force push required!
 #
@@ -96,10 +96,10 @@ readonly NC='\033[0m' # No Color
 # ⚠️  MODIFY THESE VALUES BEFORE RUNNING THE SCRIPT
 #
 
-NEW_AUTHOR_NAME="Wei Guo"
-NEW_AUTHOR_EMAIL="wei.guo@moodys.com"
-NEW_COMMITTER_NAME="Wei Guo"
-NEW_COMMITTER_EMAIL="wei.guo@moodys.com"
+NEW_AUTHOR_NAME="your-name"
+NEW_AUTHOR_EMAIL="your-email"
+NEW_COMMITTER_NAME="your-name"
+NEW_COMMITTER_EMAIL="your-email"
 
 ################################################################################
 # UTILITY FUNCTIONS

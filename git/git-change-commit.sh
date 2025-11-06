@@ -5,7 +5,7 @@
 # @author Wei Guo
 # @version 1.1.0
 # @license MIT
-# @repository https://github.com/your-repo/git-scripts
+# @repository https://github.com/ropean/scripts
 # @requires git 2.0+, bash 4.0+
 # @note This script rewrites Git history!
 #

@@ -30,8 +30,28 @@
       "text": "Git Tools",
       "items": [
         {
+          "text": "Git Change All Authors (Fast Version)",
+          "link": "/git/git-change-all-authors-fast"
+        },
+        {
+          "text": "Git Change All Authors",
+          "link": "/git/git-change-all-authors"
+        },
+        {
+          "text": "Git Change Single Commit",
+          "link": "/git/git-change-commit"
+        },
+        {
+          "text": "Git Change PR Authors",
+          "link": "/git/git-change-pr-authors"
+        },
+        {
           "text": "Git LFS Config Generator",
           "link": "/git/git-lfs-config-generator"
+        },
+        {
+          "text": "Git Squash to Single Commit",
+          "link": "/git/git-squash-to-single-commit"
         },
         {
           "text": "Git Submodules Management Script",

@@ -5,7 +5,7 @@
 # @author Wei Guo
 # @version 1.0.0
 # @license MIT
-# @repository https://github.com/your-repo/git-scripts
+# @repository https://github.com/ropean/scripts
 # @requires git 2.22+, git-filter-repo 2.26+, bash 4.0+, python3
 # @note This script rewrites ALL Git history! Remote URLs will be removed!
 #
