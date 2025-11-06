@@ -3,8 +3,8 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - release  # Trigger on release branch updates
-  workflow_dispatch:  # Allow manual trigger
+      - release # Trigger on release branch updates
+  workflow_dispatch: # Allow manual trigger
 
 jobs:
   build-and-deploy:
@@ -37,7 +37,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          projectName: scripts-collection  # Change this to your Cloudflare Pages project name
+          projectName: scripts-collection # Change this to your Cloudflare Pages project name
           directory: docs/.vitepress/dist
           # Optional: Disable gitHub Deployment
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
