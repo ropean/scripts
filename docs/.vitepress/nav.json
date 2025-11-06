@@ -4,10 +4,6 @@
     "link": "/"
   },
   {
-    "text": ".wrangler Scripts",
-    "link": "/.wrangler/"
-  },
-  {
     "text": "Backend Scripts",
     "link": "/backend/"
   },

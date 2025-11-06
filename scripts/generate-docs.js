@@ -5,40 +5,52 @@
  * Dynamically scans all directories and creates markdown pages
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 // Configuration
-const ROOT_DIR = path.join(__dirname, '..');
-const DOCS_DIR = path.join(ROOT_DIR, 'docs');
-const SIDEBAR_FILE = path.join(DOCS_DIR, '.vitepress', 'sidebar.json');
+const ROOT_DIR = path.join(__dirname, "..");
+const DOCS_DIR = path.join(ROOT_DIR, "docs");
+const SIDEBAR_FILE = path.join(DOCS_DIR, ".vitepress", "sidebar.json");
 
 // Directories to exclude from scanning
 const EXCLUDED_DIRS = [
-  'node_modules',
-  '.git',
-  '.github',
-  'docs',
-  'scripts',
-  '.vitepress',
-  'dist',
-  'build',
-  '.cache',
-  '.temp'
+  "node_modules",
+  ".git",
+  ".github",
+  ".wrangler",
+  "docs",
+  "scripts",
+  ".vitepress",
+  "dist",
+  "build",
+  ".cache",
+  ".temp",
 ];
 
 // Supported script file extensions
-const SUPPORTED_EXTENSIONS = ['.js', '.sh', '.py', '.ts', '.mjs', '.cjs', '.bash'];
+const SUPPORTED_EXTENSIONS = [
+  ".js",
+  ".sh",
+  ".py",
+  ".ts",
+  ".mjs",
+  ".cjs",
+  ".bash",
+];
 
 /**
  * Get all category directories (excludes system directories)
  * @returns {Array} List of category directory names
  */
 function getCategoryDirectories() {
-  return fs.readdirSync(ROOT_DIR)
-    .filter(name => {
+  return fs
+    .readdirSync(ROOT_DIR)
+    .filter((name) => {
       const fullPath = path.join(ROOT_DIR, name);
-      return fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name);
+      return (
+        fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name)
+      );
     })
     .sort();
 }
@@ -49,7 +61,7 @@ function getCategoryDirectories() {
  * @returns {object} Category configuration
  */
 function loadCategoryConfig(categoryPath) {
-  const configPath = path.join(categoryPath, 'config.js');
+  const configPath = path.join(categoryPath, "config.js");
 
   if (fs.existsSync(configPath)) {
     try {
@@ -64,9 +76,9 @@ function loadCategoryConfig(categoryPath) {
   // Return default config based on directory name
   const dirName = path.basename(categoryPath);
   return {
-    title: dirName.charAt(0).toUpperCase() + dirName.slice(1) + ' Scripts',
+    title: dirName.charAt(0).toUpperCase() + dirName.slice(1) + " Scripts",
     description: `Scripts in the ${dirName} category`,
-    icon: '📄'
+    icon: "📄",
   };
 }
 
@@ -76,19 +88,19 @@ function loadCategoryConfig(categoryPath) {
  * @returns {object} Metadata object with title, description, etc.
  */
 function extractMetadata(filePath) {
-  const content = fs.readFileSync(filePath, 'utf-8');
-  const lines = content.split('\n');
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
   const ext = path.extname(filePath);
 
   let metadata = {
-    title: '',
-    description: '',
-    author: '',
-    version: '',
-    example: '',
-    requires: '',
-    see: '',
-    note: ''
+    title: "",
+    description: "",
+    author: "",
+    version: "",
+    example: "",
+    requires: "",
+    see: "",
+    note: "",
   };
 
   let inHeaderBlock = false;
@@ -99,7 +111,10 @@ function extractMetadata(filePath) {
     const line = lines[i].trim();
 
     // Detect start of header block
-    if (!inHeaderBlock && (line.startsWith('/**') || line.startsWith('"""') || line.startsWith('#'))) {
+    if (
+      !inHeaderBlock &&
+      (line.startsWith("/**") || line.startsWith('"""') || line.startsWith("#"))
+    ) {
       inHeaderBlock = true;
       headerLines.push(line);
       continue;
@@ -110,7 +125,11 @@ function extractMetadata(filePath) {
       headerLines.push(line);
 
       // Detect end of header block
-      if (line.includes('*/') || line.includes('"""') || (!line.startsWith('#') && !line.startsWith('*') && line.length > 0)) {
+      if (
+        line.includes("*/") ||
+        line.includes('"""') ||
+        (!line.startsWith("#") && !line.startsWith("*") && line.length > 0)
+      ) {
         break;
       }
     }
@@ -120,29 +139,33 @@ function extractMetadata(filePath) {
   for (const line of headerLines) {
     // Remove comment markers
     let cleanLine = line
-      .replace(/^(\/\*\*|\/\/|#|\/?\*+|""")\s*/, '')
-      .replace(/\*\/$/, '')
-      .replace(/"""\s*$/, '')
+      .replace(/^(\/\*\*|\/\/|#|\/?\*+|""")\s*/, "")
+      .replace(/\*\/$/, "")
+      .replace(/"""\s*$/, "")
       .trim();
 
     // Parse @tags
-    if (cleanLine.startsWith('@title')) {
-      metadata.title = cleanLine.replace('@title', '').trim();
-    } else if (cleanLine.startsWith('@description')) {
-      metadata.description = cleanLine.replace('@description', '').trim();
-    } else if (cleanLine.startsWith('@author')) {
-      metadata.author = cleanLine.replace('@author', '').trim();
-    } else if (cleanLine.startsWith('@version')) {
-      metadata.version = cleanLine.replace('@version', '').trim();
-    } else if (cleanLine.startsWith('@example')) {
-      metadata.example = cleanLine.replace('@example', '').trim();
-    } else if (cleanLine.startsWith('@requires')) {
-      metadata.requires = cleanLine.replace('@requires', '').trim();
-    } else if (cleanLine.startsWith('@see')) {
-      metadata.see = cleanLine.replace('@see', '').trim();
-    } else if (cleanLine.startsWith('@note')) {
-      metadata.note = cleanLine.replace('@note', '').trim();
-    } else if (!metadata.description && cleanLine && !cleanLine.startsWith('@')) {
+    if (cleanLine.startsWith("@title")) {
+      metadata.title = cleanLine.replace("@title", "").trim();
+    } else if (cleanLine.startsWith("@description")) {
+      metadata.description = cleanLine.replace("@description", "").trim();
+    } else if (cleanLine.startsWith("@author")) {
+      metadata.author = cleanLine.replace("@author", "").trim();
+    } else if (cleanLine.startsWith("@version")) {
+      metadata.version = cleanLine.replace("@version", "").trim();
+    } else if (cleanLine.startsWith("@example")) {
+      metadata.example = cleanLine.replace("@example", "").trim();
+    } else if (cleanLine.startsWith("@requires")) {
+      metadata.requires = cleanLine.replace("@requires", "").trim();
+    } else if (cleanLine.startsWith("@see")) {
+      metadata.see = cleanLine.replace("@see", "").trim();
+    } else if (cleanLine.startsWith("@note")) {
+      metadata.note = cleanLine.replace("@note", "").trim();
+    } else if (
+      !metadata.description &&
+      cleanLine &&
+      !cleanLine.startsWith("@")
+    ) {
       // Fallback: use first non-tag line as description
       if (!metadata.title) {
         metadata.title = cleanLine;
@@ -159,7 +182,7 @@ function extractMetadata(filePath) {
 
   // Ensure description exists
   if (!metadata.description) {
-    metadata.description = 'No description available';
+    metadata.description = "No description available";
   }
 
   metadata.filename = path.basename(filePath);
@@ -175,13 +198,13 @@ function extractMetadata(filePath) {
  */
 function getLanguage(ext) {
   const languageMap = {
-    'js': 'javascript',
-    'mjs': 'javascript',
-    'cjs': 'javascript',
-    'ts': 'typescript',
-    'sh': 'bash',
-    'bash': 'bash',
-    'py': 'python'
+    js: "javascript",
+    mjs: "javascript",
+    cjs: "javascript",
+    ts: "typescript",
+    sh: "bash",
+    bash: "bash",
+    py: "python",
   };
   return languageMap[ext] || ext;
 }
@@ -194,12 +217,12 @@ function getLanguage(ext) {
  * @returns {string} Generated markdown content
  */
 function generateScriptPage(scriptPath, category, metadata) {
-  const code = fs.readFileSync(scriptPath, 'utf-8');
+  const code = fs.readFileSync(scriptPath, "utf-8");
   const language = getLanguage(metadata.ext);
 
   // Escape strings for YAML frontmatter
   const escapeYaml = (str) => {
-    return JSON.stringify(str.replace(/\n/g, ' '));
+    return JSON.stringify(str.replace(/\n/g, " "));
   };
 
   let markdown = `---
@@ -218,7 +241,8 @@ ${metadata.description}
     markdown += `## Metadata\n\n`;
     if (metadata.author) markdown += `- **Author**: ${metadata.author}\n`;
     if (metadata.version) markdown += `- **Version**: ${metadata.version}\n`;
-    if (metadata.requires) markdown += `- **Dependencies**: ${metadata.requires}\n`;
+    if (metadata.requires)
+      markdown += `- **Dependencies**: ${metadata.requires}\n`;
     if (metadata.see) markdown += `- **See Also**: ${metadata.see}\n`;
     markdown += `\n`;
   }
@@ -246,7 +270,9 @@ ${metadata.description}
 
 ---
 
-[View on GitHub](https://github.com/ropean/scripts/blob/main/${category}/${metadata.filename})
+[View on GitHub](https://github.com/ropean/scripts/blob/main/${category}/${
+    metadata.filename
+  })
 `;
 
   return markdown;
@@ -272,7 +298,7 @@ ${categoryInfo.description}
 
 `;
 
-  scripts.forEach(script => {
+  scripts.forEach((script) => {
     markdown += `### [${script.metadata.title}](./${script.slug})\n\n`;
     markdown += `${script.metadata.description}\n\n`;
     if (script.metadata.author) {
@@ -288,17 +314,17 @@ ${categoryInfo.description}
  * Main generation function
  */
 function generateDocs() {
-  console.log('🚀 Starting documentation generation...\n');
+  console.log("🚀 Starting documentation generation...\n");
 
   const categories = getCategoryDirectories();
   const sidebarConfig = {};
 
   if (categories.length === 0) {
-    console.log('⚠️  No categories found!');
+    console.log("⚠️  No categories found!");
     return;
   }
 
-  categories.forEach(category => {
+  categories.forEach((category) => {
     console.log(`📁 Processing ${category}...`);
 
     const categoryDir = path.join(ROOT_DIR, category);
@@ -314,11 +340,10 @@ function generateDocs() {
     fs.mkdirSync(docsCategory, { recursive: true });
 
     // Get all script files
-    const files = fs.readdirSync(categoryDir)
-      .filter(f => {
-        const ext = path.extname(f);
-        return SUPPORTED_EXTENSIONS.includes(ext) && f !== 'config.js';
-      });
+    const files = fs.readdirSync(categoryDir).filter((f) => {
+      const ext = path.extname(f);
+      return SUPPORTED_EXTENSIONS.includes(ext) && f !== "config.js";
+    });
 
     if (files.length === 0) {
       console.log(`   ℹ️  No scripts found`);
@@ -328,7 +353,7 @@ function generateDocs() {
     const scripts = [];
 
     // Process each script
-    files.forEach(file => {
+    files.forEach((file) => {
       const scriptPath = path.join(categoryDir, file);
       const metadata = extractMetadata(scriptPath);
       const slug = path.basename(file, path.extname(file));
@@ -343,19 +368,23 @@ function generateDocs() {
     });
 
     // Generate category index
-    const indexMarkdown = generateCategoryIndex(category, categoryInfo, scripts);
-    fs.writeFileSync(path.join(docsCategory, 'index.md'), indexMarkdown);
+    const indexMarkdown = generateCategoryIndex(
+      category,
+      categoryInfo,
+      scripts
+    );
+    fs.writeFileSync(path.join(docsCategory, "index.md"), indexMarkdown);
     console.log(`   ✅ Generated: index.md\n`);
 
     // Build sidebar config
     sidebarConfig[`/${category}/`] = [
       {
         text: categoryInfo.title,
-        items: scripts.map(s => ({
+        items: scripts.map((s) => ({
           text: s.metadata.title,
-          link: `/${category}/${s.slug}`
-        }))
-      }
+          link: `/${category}/${s.slug}`,
+        })),
+      },
     ];
   });
 
@@ -365,10 +394,15 @@ function generateDocs() {
   // Update navigation
   updateNavigation(categories);
 
-  console.log('✨ Documentation generation complete!\n');
+  console.log("✨ Documentation generation complete!\n");
   console.log(`📊 Summary:`);
   console.log(`   - Categories: ${categories.length}`);
-  console.log(`   - Total scripts: ${Object.values(sidebarConfig).reduce((sum, cat) => sum + cat[0].items.length, 0)}`);
+  console.log(
+    `   - Total scripts: ${Object.values(sidebarConfig).reduce(
+      (sum, cat) => sum + cat[0].items.length,
+      0
+    )}`
+  );
 }
 
 /**
@@ -377,7 +411,7 @@ function generateDocs() {
  */
 function writeSidebarConfig(sidebarConfig) {
   fs.writeFileSync(SIDEBAR_FILE, JSON.stringify(sidebarConfig, null, 2));
-  console.log('📝 Updated sidebar configuration');
+  console.log("📝 Updated sidebar configuration");
 }
 
 /**
@@ -385,28 +419,28 @@ function writeSidebarConfig(sidebarConfig) {
  * @param {Array} categories - List of category names
  */
 function updateNavigation(categories) {
-  const navConfigPath = path.join(DOCS_DIR, '.vitepress', 'nav.json');
+  const navConfigPath = path.join(DOCS_DIR, ".vitepress", "nav.json");
 
   const navItems = [
-    { text: 'Home', link: '/' },
-    ...categories.map(cat => {
+    { text: "Home", link: "/" },
+    ...categories.map((cat) => {
       const categoryPath = path.join(ROOT_DIR, cat);
       const config = loadCategoryConfig(categoryPath);
       return {
         text: config.title,
-        link: `/${cat}/`
+        link: `/${cat}/`,
       };
-    })
+    }),
   ];
 
   fs.writeFileSync(navConfigPath, JSON.stringify(navItems, null, 2));
-  console.log('📝 Updated navigation configuration');
+  console.log("📝 Updated navigation configuration");
 }
 
 // Run the generator
 try {
   generateDocs();
 } catch (error) {
-  console.error('❌ Error generating docs:', error);
+  console.error("❌ Error generating docs:", error);
   process.exit(1);
 }
