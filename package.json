@@ -1,0 +1,16 @@
+{
+  "name": "scripts-collection",
+  "version": "1.0.0",
+  "description": "A curated collection of excellent JavaScript scripts",
+  "scripts": {
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "node scripts/generate-docs.js && vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "generate": "node scripts/generate-docs.js"
+  },
+  "devDependencies": {
+    "vitepress": "^1.0.0"
+  },
+  "keywords": ["javascript", "scripts", "code-examples"],
+  "license": "MIT"
+}

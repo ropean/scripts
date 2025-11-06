@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Build output
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/.vitepress/.temp
+
+# Generated docs
+docs/frontend/*.md
+docs/backend/*.md
+docs/git/*.md
+docs/node/*.md
+!docs/frontend/index.md
+!docs/backend/index.md
+!docs/git/index.md
+!docs/node/index.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Logs
+*.log
+npm-debug.log*
