@@ -1,0 +1,54 @@
+{
+  "/frontend/": [
+    {
+      "text": "Frontend Scripts",
+      "items": [
+        {
+          "text": "Intercept Decap CMS authentication requests",
+          "link": "/frontend/intercept-requests"
+        },
+        {
+          "text": "React Select Auto Selector",
+          "link": "/frontend/react-select-auto-selector"
+        }
+      ]
+    }
+  ],
+  "/backend/": [
+    {
+      "text": "Backend Scripts",
+      "items": [
+        {
+          "text": "local-proxy.js",
+          "link": "/backend/local-proxy"
+        }
+      ]
+    }
+  ],
+  "/git/": [
+    {
+      "text": "Git Tools",
+      "items": [
+        {
+          "text": ")",
+          "link": "/git/git-lfs-config-generator"
+        },
+        {
+          "text": ")",
+          "link": "/git/git-submodules"
+        }
+      ]
+    }
+  ],
+  "/node/": [
+    {
+      "text": "Node Utilities",
+      "items": [
+        {
+          "text": "Cloudflare Workers Environment Setup Script",
+          "link": "/node/cloudflare-setup"
+        }
+      ]
+    }
+  ]
+}

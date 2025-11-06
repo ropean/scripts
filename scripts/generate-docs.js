@@ -12,7 +12,7 @@ const path = require('path');
 const CATEGORIES = ['frontend', 'backend', 'git', 'node'];
 const ROOT_DIR = path.join(__dirname, '..');
 const DOCS_DIR = path.join(ROOT_DIR, 'docs');
-const CONFIG_FILE = path.join(DOCS_DIR, '.vitepress', 'config.js');
+const SIDEBAR_FILE = path.join(DOCS_DIR, '.vitepress', 'sidebar.json');
 
 // Category display names and descriptions
 const CATEGORY_INFO = {
@@ -119,9 +119,15 @@ function generateScriptPage(scriptPath, category, metadata) {
   const code = fs.readFileSync(scriptPath, 'utf-8');
   const fileExt = metadata.ext === 'sh' ? 'bash' : metadata.ext;
 
+  // Escape strings for YAML frontmatter
+  const escapeYaml = (str) => {
+    // Replace quotes and newlines, then wrap in quotes
+    return JSON.stringify(str.replace(/\n/g, ' '));
+  };
+
   let markdown = `---
-title: ${metadata.title}
-description: ${metadata.description}
+title: ${escapeYaml(metadata.title)}
+description: ${escapeYaml(metadata.description)}
 ---
 
 # ${metadata.title}
@@ -258,31 +264,19 @@ function generateDocs() {
     ];
   });
 
-  // Update VitePress config
-  updateVitePressConfig(sidebarConfig);
+  // Write sidebar config
+  writeSidebarConfig(sidebarConfig);
 
   console.log('✨ Documentation generation complete!\n');
 }
 
 /**
- * Update VitePress config with generated sidebar
+ * Write sidebar configuration to JSON file
  * @param {object} sidebarConfig - Generated sidebar configuration
  */
-function updateVitePressConfig(sidebarConfig) {
-  let config = fs.readFileSync(CONFIG_FILE, 'utf-8');
-
-  // Replace sidebar section
-  const sidebarStr = JSON.stringify(sidebarConfig, null, 6)
-    .replace(/"([^"]+)":/g, '$1:') // Remove quotes from keys
-    .replace(/\n/g, '\n    '); // Adjust indentation
-
-  config = config.replace(
-    /sidebar:\s*{[^}]*(\{[^}]*\}[^}]*)*}/s,
-    `sidebar: ${sidebarStr}`
-  );
-
-  fs.writeFileSync(CONFIG_FILE, config);
-  console.log('📝 Updated VitePress config');
+function writeSidebarConfig(sidebarConfig) {
+  fs.writeFileSync(SIDEBAR_FILE, JSON.stringify(sidebarConfig, null, 2));
+  console.log('📝 Updated sidebar configuration');
 }
 
 // Run the generator
