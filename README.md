@@ -1,38 +1,69 @@
 # Scripts Collection
 
-A curated collection of excellent JavaScript code examples for both frontend and backend development.
+> A curated collection of production-ready scripts and code examples for modern web development
 
-## 📚 Documentation Website
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Documentation](https://img.shields.io/badge/docs-live-brightgreen.svg)](https://ropean.github.io/scripts/)
 
-Visit our beautiful documentation site with syntax highlighting and search:
-- **GitHub Pages**: https://ropean.github.io/scripts/
-- **Cloudflare Pages**: (configure after deployment)
+## 📖 About
 
-## About
+This repository contains a carefully curated collection of practical scripts, utilities, and code examples designed to solve real-world development challenges. Each script is documented, tested, and ready to use in your projects.
 
-This repository is dedicated to sharing high-quality, practical JavaScript code snippets and examples that demonstrate best practices in modern web development. Whether you're working on the client-side or server-side, you'll find useful patterns and implementations here.
+## 🌐 Documentation
 
-## What You'll Find
+Browse the complete collection with syntax highlighting, search, and categorization:
 
-- **Frontend Examples**: React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns
-- **Backend Examples**: Node.js applications, API implementations, database integrations, and server-side utilities
-- **Full-Stack Projects**: End-to-end examples showcasing complete application architectures
-- **Best Practices**: Code that emphasizes clean architecture, performance, and maintainability
+- 🚀 **Primary**: [GitHub Pages](https://ropean.github.io/scripts/)
+- ⚡ **Mirror**: Cloudflare Pages (faster for global access)
 
-## Goals
+## 📂 Categories
 
-- Share production-ready JavaScript code
-- Demonstrate modern JavaScript features and patterns
-- Provide reference implementations for common use cases
-- Help developers learn from real-world examples
+Our scripts are organized into focused categories:
 
-## 🚀 Local Development
+### 🎨 Frontend
+React components, DOM manipulation, browser utilities, and UI patterns
+- Decap CMS authentication interceptor
+- React Select auto-selector for automation
+- *[View all frontend scripts →](https://ropean.github.io/scripts/frontend/)*
+
+### ⚙️ Backend
+Server-side utilities, API helpers, and Node.js tools
+- Local development proxy server
+- Authentication middleware
+- *[View all backend scripts →](https://ropean.github.io/scripts/backend/)*
+
+### 🔧 Git
+Version control automation and repository management
+- Smart Git LFS configuration generator
+- Submodules management toolkit
+- *[View all git tools →](https://ropean.github.io/scripts/git/)*
+
+### 📦 Node.js
+Development tools, build utilities, and infrastructure scripts
+- Cloudflare Workers environment setup
+- Package management helpers
+- *[View all Node.js scripts →](https://ropean.github.io/scripts/node/)*
+
+## 🚀 Quick Start
+
+### Using Scripts
+
+1. Browse the [documentation site](https://ropean.github.io/scripts/)
+2. Find a script that solves your problem
+3. Copy the code or download the file
+4. Follow the usage instructions in the script header
+
+### Local Development
 
 ```bash
+# Clone the repository
+git clone https://github.com/ropean/scripts.git
+cd scripts
+
 # Install dependencies
 npm install
 
-# Generate documentation from scripts
+# Generate documentation
 npm run generate
 
 # Start development server
@@ -42,54 +73,187 @@ npm run docs:dev
 npm run docs:build
 ```
 
-## 📦 Adding New Scripts
+## ✍️ Contributing Scripts
 
-1. Add your script to the appropriate category folder:
-   - `frontend/` - Frontend scripts and utilities
-   - `backend/` - Backend and server-side scripts
-   - `git/` - Git automation and tools
-   - `node/` - Node.js utilities and tools
+We welcome high-quality contributions! Here's how to add a new script:
 
-2. Include descriptive comments at the top:
-   ```javascript
-   /**
-    * Script Title
-    * Detailed description of what this script does
-    * and how it works
-    */
-   ```
+### 1. Choose the Right Category
 
-3. Push to the `release` branch - documentation will be auto-generated and deployed!
+Place your script in the appropriate directory:
+- `frontend/` - Browser and UI-related scripts
+- `backend/` - Server-side and Node.js scripts
+- `git/` - Version control tools
+- `node/` - Build tools and utilities
 
-## 🌐 Deployment
+Or create a new category directory if needed.
+
+### 2. Follow the Script Format
+
+Every script must include a standardized header with `@tags`:
+
+```javascript
+/**
+ * @title Your Script Title
+ * @description Brief one-line description
+ * @version 1.0.0
+ * @author Your Name
+ *
+ * Detailed explanation of what this script does,
+ * how it works, and when to use it.
+ *
+ * @example
+ * node your-script.js
+ *
+ * @requires dependency1, dependency2
+ * @note Important notes or warnings
+ */
+```
+
+For shell scripts:
+
+```bash
+#!/bin/bash
+
+# @title Your Script Title
+# @description Brief one-line description
+# @version 1.0.0
+# @author Your Name
+#
+# Detailed explanation here
+#
+# @example
+# ./your-script.sh
+```
+
+📚 See [.script-template.md](./.script-template.md) for complete format specification.
+
+### 3. Add Category Configuration (if new category)
+
+Create `config.js` in your category directory:
+
+```javascript
+module.exports = {
+  title: "Category Title",
+  description: "Brief description of this category",
+  icon: "🎯" // Choose an appropriate emoji
+};
+```
+
+### 4. Test and Submit
+
+```bash
+# Generate docs to verify formatting
+npm run generate
+
+# Build to ensure no errors
+npm run docs:build
+
+# Commit your changes
+git add .
+git commit -m "Add: your script description"
+
+# Create pull request to 'release' branch
+```
+
+## 🏗️ Project Structure
+
+```
+scripts/
+├── .script-template.md       # Script format specification
+├── frontend/                 # Frontend scripts
+│   ├── config.js            # Category configuration
+│   └── *.js                 # Script files
+├── backend/                  # Backend scripts
+├── git/                      # Git tools
+├── node/                     # Node.js utilities
+├── docs/                     # VitePress documentation
+│   ├── .vitepress/
+│   │   ├── config.mjs       # Site configuration
+│   │   ├── sidebar.json     # Auto-generated sidebar
+│   │   └── nav.json         # Auto-generated navigation
+│   └── public/
+│       └── logo.svg         # Site logo
+├── scripts/
+│   └── generate-docs.js     # Documentation generator
+└── .github/workflows/       # CI/CD pipelines
+```
+
+## 🔧 Documentation System
+
+The documentation is automatically generated from script files:
+
+1. **Dynamic Scanning**: Automatically discovers all category directories
+2. **Metadata Extraction**: Parses `@tags` from script headers
+3. **Markdown Generation**: Creates individual pages for each script
+4. **Navigation Updates**: Dynamically builds sidebar and nav menus
+5. **SEO Optimization**: Adds meta tags and sitemaps
+6. **Build Optimization**: Minifies and compresses output
+
+## 🌍 Deployment
 
 ### GitHub Pages (Default)
-- Automatically deploys on push to `release` branch
-- Workflow: `.github/workflows/deploy-pages.yml`
-- URL: https://ropean.github.io/scripts/
+
+Automatically deploys on push to `release` branch via GitHub Actions.
+
+**URL**: https://ropean.github.io/scripts/
 
 ### Cloudflare Pages (Alternative)
-- Faster global access, especially in China
-- See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) for setup
-- Workflow: `.github/workflows/deploy-cloudflare.yml`
 
-## Contributing
+Faster global access with unlimited bandwidth.
 
-Contributions are welcome! If you have excellent JavaScript code to share:
+**Setup**: See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)
 
-1. Ensure your code follows modern JavaScript best practices
-2. Include clear documentation and comments in your code
-3. Add examples or usage instructions as comments
-4. Submit a pull request to the `release` branch
+Both deployments can run simultaneously for redundancy.
 
-## License
+## 📋 Script Format Features
 
-MIT
+Our standardized format ensures consistency and discoverability:
 
-## Contact
+- **Required Tags**: `@title`, `@description`
+- **Optional Tags**: `@author`, `@version`, `@example`, `@requires`, `@note`, `@see`
+- **Auto-generated**:
+  - Syntax highlighting
+  - Category classification
+  - Metadata sections
+  - GitHub source links
 
-For questions or suggestions, please open an issue or reach out through [your preferred contact method].
+## 🎯 Quality Standards
+
+All scripts in this repository follow these principles:
+
+✅ **Production-Ready**: Tested and reliable code
+✅ **Well-Documented**: Clear headers and inline comments
+✅ **Self-Contained**: Minimal external dependencies
+✅ **Best Practices**: Modern JavaScript/Bash conventions
+✅ **Practical**: Solves real-world problems
+
+## 🤝 Contributing
+
+Contributions are welcome! Please:
+
+1. Read the [script format specification](./.script-template.md)
+2. Ensure your code follows best practices
+3. Add comprehensive documentation
+4. Test locally before submitting
+5. Submit PR to the `release` branch
+
+## 📄 License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## 🙏 Acknowledgments
+
+Built with:
+- [VitePress](https://vitepress.dev/) - Documentation framework
+- [GitHub Actions](https://github.com/features/actions) - CI/CD
+- [Cloudflare Pages](https://pages.cloudflare.com/) - Fast global deployment
+
+## 📬 Contact
+
+- **Issues**: [GitHub Issues](https://github.com/ropean/scripts/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/ropean/scripts/discussions)
+- **Website**: [ropean.org](https://ropean.org/)
 
 ---
 
-_Sharing excellence in JavaScript, one commit at a time._
+**Made with ❤️ by [ropean](https://ropean.org/)** | *Sharing excellence in code, one script at a time*

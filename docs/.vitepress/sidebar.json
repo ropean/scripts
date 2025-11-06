@@ -1,10 +1,21 @@
 {
+  "/backend/": [
+    {
+      "text": "Backend Scripts",
+      "items": [
+        {
+          "text": "Local Development Proxy Server",
+          "link": "/backend/local-proxy"
+        }
+      ]
+    }
+  ],
   "/frontend/": [
     {
       "text": "Frontend Scripts",
       "items": [
         {
-          "text": "Intercept Decap CMS authentication requests",
+          "text": "Decap CMS Auth Request Interceptor",
           "link": "/frontend/intercept-requests"
         },
         {
@@ -14,27 +25,16 @@
       ]
     }
   ],
-  "/backend/": [
-    {
-      "text": "Backend Scripts",
-      "items": [
-        {
-          "text": "local-proxy.js",
-          "link": "/backend/local-proxy"
-        }
-      ]
-    }
-  ],
   "/git/": [
     {
       "text": "Git Tools",
       "items": [
         {
-          "text": ")",
+          "text": "Git LFS Config Generator",
           "link": "/git/git-lfs-config-generator"
         },
         {
-          "text": ")",
+          "text": "Git Submodules Management Script",
           "link": "/git/git-submodules"
         }
       ]
@@ -45,7 +45,7 @@
       "text": "Node Utilities",
       "items": [
         {
-          "text": "Cloudflare Workers Environment Setup Script",
+          "text": "!/usr/bin/env node",
           "link": "/node/cloudflare-setup"
         }
       ]

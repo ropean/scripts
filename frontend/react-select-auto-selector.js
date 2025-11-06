@@ -1,12 +1,17 @@
 /**
- * React Select Auto Selector
+ * @title React Select Auto Selector
+ * @description Automatically selects options in React Select dropdowns with priority for "Edit" options
+ * @version 1.0.0
+ * @author ropean
  *
  * Purpose:
- * Create all permits api token on cloudflare
  * Automatically selects options in all React Select dropdowns on the current page.
  * Priority: First tries to select options starting with "Edit", otherwise selects the last option.
  * This utility is particularly useful for testing, form automation, or quickly setting
  * multiple select fields to their desired option.
+ *
+ * Use Case:
+ * Create all permits api token on cloudflare dashboard with multiple dropdown selections.
  *
  * How It Works:
  * 1. Finds all React Select control elements using the CSS class '.react-select__control'

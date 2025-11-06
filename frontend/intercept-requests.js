@@ -1,4 +1,20 @@
-// Intercept Decap CMS authentication requests
+/**
+ * @title Decap CMS Auth Request Interceptor
+ * @description Intercepts and redirects Decap CMS authentication requests to local development server
+ * @version 1.0.0
+ *
+ * This utility intercepts Netlify Identity authentication requests from Decap CMS
+ * and redirects them to a local authentication endpoint. Useful for local development
+ * and testing of Decap CMS without requiring actual Netlify Identity setup.
+ *
+ * @example
+ * // Include this script in your HTML before Decap CMS loads
+ * <script src="intercept-requests.js"></script>
+ *
+ * @requires Local auth server running on http://localhost:3000/auth
+ * @note This is for development use only. Do not use in production.
+ */
+
 const originalFetch = window.fetch;
 window.fetch = async function (...args) {
   let [url, options] = args;

@@ -9,13 +9,15 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/generate-docs.js && vitepress build docs",
-    "dev": "vitepress dev docs",
+    "docs:build": "node scripts/generate-docs.js && vitepress build docs",
+    "docs:dev": "vitepress dev docs",
+    "docs:preview": "vitepress preview docs",
     "generate": "node scripts/generate-docs.js",
-    "preview": "vitepress preview docs",
+    "build": "node scripts/generate-docs.js && vitepress build docs",
     "pages": "wrangler pages deploy"
   },
   "devDependencies": {
-    "vitepress": "^1.0.0"
+    "vitepress": "^1.0.0",
+    "terser": "^5.27.0"
   }
 }

@@ -1,11 +1,21 @@
-// local-proxy.js
 /**
- * Local Development Proxy Server for Decap CMS with Hugo
+ * @title Local Development Proxy Server
+ * @description Proxy server for Decap CMS with Hugo, handling local authentication
+ * @version 1.0.0
+ * @author ropean
+ *
  * This script creates a proxy server that handles Netlify Identity authentication
  * locally while proxying all other requests to the Hugo development server.
+ *
+ * @example
+ * node local-proxy.js
+ * // Then access http://localhost:8080/admin/
+ *
+ * @requires http-proxy
+ * @note For development use only
  */
 
-// npm install http-proxy
+// Installation: npm install http-proxy
 const http = require("http");
 const httpProxy = require("http-proxy");
 

@@ -6,11 +6,11 @@ title: Node Utilities
 
 Node.js utilities, package management, deployment tools, and infrastructure scripts
 
-## Available Scripts
+## Available Scripts (1)
 
-### [Cloudflare Workers Environment Setup Script](./cloudflare-setup)
+### [!/usr/bin/env node](./cloudflare-setup)
 
-Cloudflare Workers Environment Setup Script This script automates the setup of Cloudflare Workers resources including: - KV Namespaces (Key-Value storage) - R2 Buckets (Object storage) - D1 Databases (SQL database) - JWT Secrets (Authentication)
+No description available
 
 **File**: `cloudflare-setup.js`
 
