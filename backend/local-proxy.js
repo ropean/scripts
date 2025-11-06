@@ -6,8 +6,8 @@
  */
 
 // npm install http-proxy
-const http = require('http');
-const httpProxy = require('http-proxy');
+const http = require("http");
+const httpProxy = require("http-proxy");
 
 // Create proxy instance
 const proxy = httpProxy.createProxyServer({});
@@ -21,53 +21,53 @@ const proxyPort = 8080; // Proxy server port
  */
 const server = http.createServer((req, res) => {
   // Set CORS headers for all responses
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
   // Handle preflight OPTIONS requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     res.writeHead(200);
     res.end();
     return;
   }
 
   // Intercept authentication requests for Netlify Identity
-  if (req.url.startsWith('/.netlify/identity/')) {
-    if (req.method === 'POST') {
-      let body = '';
-      req.on('data', (chunk) => {
+  if (req.url.startsWith("/.netlify/identity/")) {
+    if (req.method === "POST") {
+      let body = "";
+      req.on("data", (chunk) => {
         body += chunk;
       });
-      req.on('end', async () => {
+      req.on("end", async () => {
         try {
           const data = JSON.parse(body);
-          console.log('Authentication request:', data);
+          console.log("Authentication request:", data);
 
           // TODO: Integrate with your OAuth service
           // const response = await fetch('https://your-oauth-service.com/auth', {...});
 
           // Mock response for testing purposes
           const mockResponse = {
-            access_token: 'test-token-' + Date.now(),
-            token_type: 'bearer',
+            access_token: "test-token-" + Date.now(),
+            token_type: "bearer",
             expires_in: 3600,
-            refresh_token: 'refresh-token',
+            refresh_token: "refresh-token",
             user: {
-              id: '1',
-              email: data.username || 'test@example.com',
+              id: "1",
+              email: data.username || "test@example.com",
               user_metadata: {},
               app_metadata: {
-                provider: 'custom',
-                roles: ['admin'],
+                provider: "custom",
+                roles: ["admin"],
               },
             },
           };
 
-          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.writeHead(200, { "Content-Type": "application/json" });
           res.end(JSON.stringify(mockResponse));
         } catch (error) {
-          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.writeHead(500, { "Content-Type": "application/json" });
           res.end(JSON.stringify({ error: error.message }));
         }
       });

@@ -1,15 +1,16 @@
 # Cloudflare Pages configuration
 # This file is optional for Pages deployment but useful for local development with Wrangler
 
-name = "scripts-collection"
+name = "scripts"
 compatibility_date = "2024-01-01"
+pages_build_output_dir = "docs/.vitepress/dist"
 
 # Pages configuration
 [env.production]
-name = "scripts-collection"
+name = "scripts"
 
 [env.preview]
-name = "scripts-collection-preview"
+name = "scripts-preview"
 
 # Build configuration (for reference, actual build happens in GitHub Actions)
 # pages_build_output_dir = "docs/.vitepress/dist"

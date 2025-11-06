@@ -53,6 +53,7 @@
 工作流文件已创建：`.github/workflows/deploy-cloudflare.yml`
 
 要启用它：
+
 1. 将 `deploy-cloudflare.yml` 中的 `projectName` 改为你的项目名称
 2. 提交并推送到 `release` 分支
 3. GitHub Actions 将自动构建并部署到 Cloudflare Pages
@@ -129,6 +130,7 @@ Branch: release
 ```
 
 6. 添加环境变量（如果需要）：
+
    - `NODE_VERSION`: `20`
 
 7. 点击 **Save and Deploy**
@@ -146,13 +148,13 @@ Branch: release
 ```javascript
 export default defineConfig({
   // GitHub Pages 使用：
-  base: '/scripts/',
+  base: "/scripts/",
 
   // 自定义域名或 Cloudflare Pages 使用：
-  base: '/',
+  base: "/",
 
   // ...其他配置
-})
+});
 ```
 
 ### 环境变量
@@ -161,22 +163,22 @@ export default defineConfig({
 
 ```javascript
 export default defineConfig({
-  base: process.env.CF_PAGES ? '/' : '/scripts/',
+  base: process.env.CF_PAGES ? "/" : "/scripts/",
   // ...
-})
+});
 ```
 
 ## 对比：GitHub Pages vs Cloudflare Pages
 
-| 特性 | GitHub Pages | Cloudflare Pages |
-|------|-------------|------------------|
-| 构建速度 | 中等 | 快 |
-| 全球访问 | 较慢（中国） | 快（包括中国） |
-| 带宽限制 | 100GB/月 | 无限制 |
-| 构建次数 | 无限 | 500次/月（免费） |
-| 自定义域名 | 支持 | 支持 |
-| HTTPS | 自动 | 自动 |
-| 部署方式 | GitHub Actions | Git/CLI/Actions |
+| 特性       | GitHub Pages   | Cloudflare Pages  |
+| ---------- | -------------- | ----------------- |
+| 构建速度   | 中等           | 快                |
+| 全球访问   | 较慢（中国）   | 快（包括中国）    |
+| 带宽限制   | 100GB/月       | 无限制            |
+| 构建次数   | 无限           | 500 次/月（免费） |
+| 自定义域名 | 支持           | 支持              |
+| HTTPS      | 自动           | 自动              |
+| 部署方式   | GitHub Actions | Git/CLI/Actions   |
 
 ## 推荐部署策略
 
@@ -189,6 +191,7 @@ export default defineConfig({
 3. 一次推送，两处部署
 
 优点：
+
 - 双重备份
 - 用户可选择最快的访问地址
 
@@ -198,6 +201,7 @@ export default defineConfig({
 2. 仅使用 Cloudflare Pages
 
 优点：
+
 - 更快的全球访问
 - 中国访问更稳定
 
@@ -235,6 +239,7 @@ export default defineConfig({
 ## 获取帮助
 
 如有问题，请：
+
 1. 查看 [Cloudflare Community](https://community.cloudflare.com/)
 2. 在本仓库提 Issue
 3. 查看 Cloudflare Pages 的构建日志

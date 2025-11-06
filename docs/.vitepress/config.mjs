@@ -1,38 +1,41 @@
-import { defineConfig } from 'vitepress'
-import { readFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { defineConfig } from "vitepress";
+import { readFileSync } from "fs";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const sidebar = JSON.parse(readFileSync(join(__dirname, 'sidebar.json'), 'utf-8'))
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const sidebar = JSON.parse(
+  readFileSync(join(__dirname, "sidebar.json"), "utf-8")
+);
 
 export default defineConfig({
-  title: 'Scripts Collection',
-  description: 'A curated collection of excellent JavaScript code examples',
-  base: '/scripts/',
+  title: "Scripts Collection",
+  description: "A curated collection of excellent JavaScript code examples",
+  base: "/",
 
   themeConfig: {
     nav: [
-      { text: 'Home', link: '/' },
-      { text: 'Frontend', link: '/frontend/' },
-      { text: 'Backend', link: '/backend/' },
-      { text: 'Git', link: '/git/' },
-      { text: 'Node', link: '/node/' }
+      { text: "Home", link: "/" },
+      { text: "Frontend", link: "/frontend/" },
+      { text: "Backend", link: "/backend/" },
+      { text: "Git", link: "/git/" },
+      { text: "Node", link: "/node/" },
     ],
 
     sidebar: sidebar,
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/ropean/scripts' }
+      { icon: "github", link: "https://github.com/ropean/scripts" },
     ],
 
     search: {
-      provider: 'local'
+      provider: "local",
     },
 
     footer: {
-      message: 'Released under the MIT License.',
-      copyright: 'Sharing excellence in JavaScript, one commit at a time.'
-    }
-  }
-})
+      message: "Released under the MIT License.",
+      copyright:
+        'Built with <a href="https://vitepress.dev/">VitePress</a> by <a href="https://ropean.org/">ropean</a> © 2025',
+    },
+  },
+});
