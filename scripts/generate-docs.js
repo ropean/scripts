@@ -281,6 +281,19 @@ ${categoryInfo.description}
 }
 
 /**
+ * Copy .script-template.md to docs directory
+ */
+function copyScriptTemplate() {
+  const templateSource = path.join(ROOT_DIR, '.script-template.md');
+  const templateDest = path.join(DOCS_DIR, 'script-template.md');
+
+  if (fs.existsSync(templateSource)) {
+    fs.copyFileSync(templateSource, templateDest);
+    console.log('📋 Copied .script-template.md to docs/');
+  }
+}
+
+/**
  * Main generation function
  */
 function generateDocs() {
@@ -359,6 +372,9 @@ function generateDocs() {
 
   // Update navigation
   updateNavigation(categories);
+
+  // Copy script template
+  copyScriptTemplate();
 
   console.log('✨ Documentation generation complete!\n');
   console.log(`📊 Summary:`);
