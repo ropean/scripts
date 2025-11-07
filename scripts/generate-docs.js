@@ -110,6 +110,11 @@ function extractMetadata(filePath) {
   for (let i = 0; i < Math.min(100, lines.length); i++) {
     const line = lines[i].trim();
 
+    // Skip shebang lines
+    if (line.startsWith('#!')) {
+      continue;
+    }
+
     // Detect start of header block
     if (
       !inHeaderBlock &&

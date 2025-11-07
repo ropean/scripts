@@ -65,7 +65,7 @@
       "text": "Node Utilities",
       "items": [
         {
-          "text": "!/usr/bin/env node",
+          "text": "Cloudflare Workers Environment Setup Script",
           "link": "/node/cloudflare-setup"
         }
       ]
