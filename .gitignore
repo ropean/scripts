@@ -21,19 +21,24 @@ build/
 .serverless/
 
 # Build output
-docs/.vitepress/dist
-docs/.vitepress/cache
-docs/.vitepress/.temp
+docs/
+!docs/.vitepress/config.mjs
+!docs/public
+!docs/index.md
+!docs/README.md
+# docs/.vitepress/dist
+# docs/.vitepress/cache
+# docs/.vitepress/.temp
 
 # Generated docs
-docs/frontend/*.md
-docs/backend/*.md
-docs/git/*.md
-docs/node/*.md
-!docs/frontend/index.md
-!docs/backend/index.md
-!docs/git/index.md
-!docs/node/index.md
+# docs/frontend/*.md
+# docs/backend/*.md
+# docs/git/*.md
+# docs/node/*.md
+# !docs/frontend/index.md
+# !docs/backend/index.md
+# !docs/git/index.md
+# !docs/node/index.md
 
 # OS
 .DS_Store
