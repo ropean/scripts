@@ -12,7 +12,7 @@
     "build": "node scripts/generate-docs.js && vitepress build docs",
     "dev": "vitepress dev docs",
     "generate": "node scripts/generate-docs.js",
-    "pages": "wrangler pages deploy",
+    "publish": "wrangler pages deploy",
     "preview": "vitepress preview docs"
   },
   "devDependencies": {
