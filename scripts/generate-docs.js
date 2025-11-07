@@ -306,42 +306,183 @@ ${categoryInfo.description}
 }
 
 /**
- * Copy markdown files from md-files directory to docs directory
+ * Get all MD category directories
+ * @returns {Array} List of MD category directory names
  */
-function copyMarkdownFiles() {
-  try {
-    // Ensure docs directory exists
-    if (!fs.existsSync(DOCS_DIR)) {
-      fs.mkdirSync(DOCS_DIR, { recursive: true });
+function getMdCategoryDirectories() {
+  if (!fs.existsSync(MD_FILES_DIR)) {
+    return [];
+  }
+
+  return fs
+    .readdirSync(MD_FILES_DIR)
+    .filter((name) => {
+      const fullPath = path.join(MD_FILES_DIR, name);
+      return (
+        fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name)
+      );
+    })
+    .sort();
+}
+
+/**
+ * Extract metadata from markdown frontmatter
+ * @param {string} filePath - Path to markdown file
+ * @returns {object} Metadata with title and description
+ */
+function extractMarkdownMetadata(filePath) {
+  const content = fs.readFileSync(filePath, "utf-8");
+  const lines = content.split("\n");
+
+  const metadata = {
+    title: "",
+    description: "",
+  };
+
+  // Check for frontmatter
+  if (lines[0] === "---") {
+    let inFrontmatter = true;
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+      if (line === "---") {
+        break;
+      }
+
+      // Parse YAML-like frontmatter
+      if (line.startsWith("title:")) {
+        metadata.title = line.replace("title:", "").trim().replace(/['"]/g, "");
+      } else if (line.startsWith("description:")) {
+        metadata.description = line.replace("description:", "").trim().replace(/['"]/g, "");
+      }
+    }
+  }
+
+  // Fallback to filename if no title
+  if (!metadata.title) {
+    metadata.title = path.basename(filePath, ".md");
+  }
+
+  return metadata;
+}
+
+/**
+ * Process markdown files in md-files directory
+ * @returns {object} Sidebar configuration for MD categories
+ */
+function processMdFiles() {
+  const mdCategories = getMdCategoryDirectories();
+  const mdSidebarConfig = {};
+  const mdNavItems = [];
+
+  if (mdCategories.length === 0) {
+    console.log("📝 No MD categories found\n");
+    return { sidebarConfig: mdSidebarConfig, navItems: mdNavItems };
+  }
+
+  console.log("📝 Processing MD files...\n");
+
+  mdCategories.forEach((category) => {
+    console.log(`📚 Processing ${category}...`);
+
+    const categoryDir = path.join(MD_FILES_DIR, category);
+    const docsCategory = path.join(DOCS_DIR, category);
+
+    // Load category config
+    const categoryInfo = loadCategoryConfig(categoryDir);
+
+    // Create docs category directory
+    if (!fs.existsSync(docsCategory)) {
+      fs.mkdirSync(docsCategory, { recursive: true });
     }
 
-    // Read all markdown files from md-files directory
+    // Get all markdown files in the category
     const files = fs
-      .readdirSync(MD_FILES_DIR)
-      .filter((file) => file.endsWith(".md"));
+      .readdirSync(categoryDir)
+      .filter((f) => f.endsWith(".md") && f !== "README.md");
 
     if (files.length === 0) {
-      console.log("No markdown files found in md-files directory");
+      console.log(`   ℹ️  No markdown files found`);
       return;
     }
 
-    // Copy each markdown file to docs directory
-    let count = 0;
-    for (const file of files) {
-      const sourcePath = path.join(MD_FILES_DIR, file);
-      const destPath = path.join(DOCS_DIR, file);
+    const mdFiles = [];
 
+    // Copy and process each markdown file
+    files.forEach((file) => {
+      const sourcePath = path.join(categoryDir, file);
+      const destPath = path.join(docsCategory, file);
+      const slug = path.basename(file, ".md");
+
+      // Copy the file
       fs.copyFileSync(sourcePath, destPath);
-      console.log(`Copied: ${file}`);
-      count++;
-    }
 
-    console.log(
-      `\nSuccessfully copied ${count} markdown file(s) to docs directory`
-    );
-  } catch (error) {
-    console.error("Error copying markdown files:", error.message);
-  }
+      // Extract metadata for sidebar
+      const metadata = extractMarkdownMetadata(sourcePath);
+
+      mdFiles.push({
+        text: metadata.title,
+        link: `/${category}/${slug}`,
+      });
+
+      console.log(`   ✅ Copied: ${file}`);
+    });
+
+    // Generate category index
+    const indexContent = generateMdCategoryIndex(category, categoryInfo, files);
+    fs.writeFileSync(path.join(docsCategory, "index.md"), indexContent);
+    console.log(`   ✅ Generated: index.md\n`);
+
+    // Build sidebar config for this MD category
+    mdSidebarConfig[`/${category}/`] = [
+      {
+        text: categoryInfo.title,
+        items: mdFiles,
+      },
+    ];
+
+    // Add to navigation
+    mdNavItems.push({
+      text: categoryInfo.title,
+      link: `/${category}/`,
+      order: categoryInfo.order || 999,
+    });
+  });
+
+  return { sidebarConfig: mdSidebarConfig, navItems: mdNavItems };
+}
+
+/**
+ * Generate category index page for MD files
+ * @param {string} category - Category name
+ * @param {object} categoryInfo - Category configuration
+ * @param {Array} files - List of markdown files
+ * @returns {string} Generated markdown content
+ */
+function generateMdCategoryIndex(category, categoryInfo, files) {
+  let markdown = `---
+title: ${categoryInfo.title}
+---
+
+# ${categoryInfo.icon} ${categoryInfo.title}
+
+${categoryInfo.description}
+
+## Available Documents (${files.length})
+
+`;
+
+  files.forEach((file) => {
+    const slug = path.basename(file, ".md");
+    const sourcePath = path.join(MD_FILES_DIR, category, file);
+    const metadata = extractMarkdownMetadata(sourcePath);
+
+    markdown += `### [${metadata.title}](./${slug})\n\n`;
+    if (metadata.description) {
+      markdown += `${metadata.description}\n\n`;
+    }
+  });
+
+  return markdown;
 }
 
 /**
@@ -422,20 +563,30 @@ function generateDocs() {
     ];
   });
 
+  // Process MD files
+  const { sidebarConfig: mdSidebarConfig, navItems: mdNavItems } = processMdFiles();
+
+  // Merge sidebar configs (script-files first, then md-files)
+  const mergedSidebarConfig = { ...sidebarConfig, ...mdSidebarConfig };
+
   // Write sidebar config
-  writeSidebarConfig(sidebarConfig);
+  writeSidebarConfig(mergedSidebarConfig);
 
-  // Update navigation
-  updateNavigation(categories);
-
-  // Copy script template
-  copyMarkdownFiles();
+  // Update navigation (script-files first, then md-files)
+  updateNavigation(categories, mdNavItems);
 
   console.log("✨ Documentation generation complete!\n");
   console.log(`📊 Summary:`);
-  console.log(`   - Categories: ${categories.length}`);
+  console.log(`   - Script categories: ${categories.length}`);
+  console.log(`   - MD categories: ${mdNavItems.length}`);
   console.log(
     `   - Total scripts: ${Object.values(sidebarConfig).reduce(
+      (sum, cat) => sum + cat[0].items.length,
+      0
+    )}`
+  );
+  console.log(
+    `   - Total MD files: ${Object.values(mdSidebarConfig).reduce(
       (sum, cat) => sum + cat[0].items.length,
       0
     )}`
@@ -453,25 +604,55 @@ function writeSidebarConfig(sidebarConfig) {
 
 /**
  * Update navigation in config file
- * @param {Array} categories - List of category names
+ * @param {Array} categories - List of script category names
+ * @param {Array} mdNavItems - List of MD navigation items
  */
-function updateNavigation(categories) {
+function updateNavigation(categories, mdNavItems = []) {
   const navConfigPath = path.join(DOCS_DIR, ".vitepress", "nav.json");
 
-  const navItems = [
-    { text: "Home", link: "/" },
-    ...categories.map((cat) => {
-      const categoryPath = path.join(SCRIPT_FILES_DIR, cat);
-      const config = loadCategoryConfig(categoryPath);
-      return {
-        text: config.title,
-        link: `/${cat}/`,
-      };
-    }),
-  ];
+  // Build script categories navigation
+  const scriptNavItems = categories.map((cat) => {
+    const categoryPath = path.join(SCRIPT_FILES_DIR, cat);
+    const config = loadCategoryConfig(categoryPath);
+    return {
+      text: config.title,
+      link: `/${cat}/`,
+      order: config.order || 0,
+    };
+  });
+
+  // Combine and sort by order
+  const allNavItems = [...scriptNavItems, ...mdNavItems].sort(
+    (a, b) => (a.order || 0) - (b.order || 0)
+  );
+
+  // Determine navigation structure based on number of items
+  let navItems;
+
+  if (allNavItems.length <= 6) {
+    // Simple flat navigation for small number of items
+    navItems = [
+      { text: "Home", link: "/" },
+      ...allNavItems.map(({ text, link }) => ({ text, link })),
+    ];
+  } else {
+    // Grouped navigation for many items
+    navItems = [
+      { text: "Home", link: "/" },
+      {
+        text: "Scripts",
+        items: scriptNavItems.map(({ text, link }) => ({ text, link })),
+      },
+      {
+        text: "Documentation",
+        items: mdNavItems.map(({ text, link }) => ({ text, link })),
+      },
+    ];
+  }
 
   fs.writeFileSync(navConfigPath, JSON.stringify(navItems, null, 2));
   console.log("📝 Updated navigation configuration");
+  console.log(`   Navigation style: ${allNavItems.length <= 6 ? "flat" : "grouped"}`);
 }
 
 // Run the generator
