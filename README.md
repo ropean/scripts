@@ -21,28 +21,36 @@ Browse the complete collection with syntax highlighting, search, and categorizat
 Our scripts are organized into focused categories:
 
 ### 🎨 Frontend
+
 React components, DOM manipulation, browser utilities, and UI patterns
+
 - Decap CMS authentication interceptor
 - React Select auto-selector for automation
-- *[View all frontend scripts →](https://ropean.github.io/scripts/frontend/)*
+- _[View all frontend scripts →](https://ropean.github.io/scripts/frontend/)_
 
 ### ⚙️ Backend
+
 Server-side utilities, API helpers, and Node.js tools
+
 - Local development proxy server
 - Authentication middleware
-- *[View all backend scripts →](https://ropean.github.io/scripts/backend/)*
+- _[View all backend scripts →](https://ropean.github.io/scripts/backend/)_
 
 ### 🔧 Git
+
 Version control automation and repository management
+
 - Smart Git LFS configuration generator
 - Submodules management toolkit
-- *[View all git tools →](https://ropean.github.io/scripts/git/)*
+- _[View all git tools →](https://ropean.github.io/scripts/git/)_
 
 ### 📦 Node.js
+
 Development tools, build utilities, and infrastructure scripts
+
 - Cloudflare Workers environment setup
 - Package management helpers
-- *[View all Node.js scripts →](https://ropean.github.io/scripts/node/)*
+- _[View all Node.js scripts →](https://ropean.github.io/scripts/node/)_
 
 ## 🚀 Quick Start
 
@@ -80,6 +88,7 @@ We welcome high-quality contributions! Here's how to add a new script:
 ### 1. Choose the Right Category
 
 Place your script in the appropriate directory:
+
 - `frontend/` - Browser and UI-related scripts
 - `backend/` - Server-side and Node.js scripts
 - `git/` - Version control tools
@@ -135,7 +144,7 @@ Create `config.js` in your category directory:
 module.exports = {
   title: "Category Title",
   description: "Brief description of this category",
-  icon: "🎯" // Choose an appropriate emoji
+  icon: "🎯", // Choose an appropriate emoji
 };
 ```
 
@@ -157,7 +166,7 @@ git commit -m "Add: your script description"
 
 ## 🏗️ Project Structure
 
-```
+```text
 scripts/
 ├── .script-template.md       # Script format specification
 ├── frontend/                 # Frontend scripts
@@ -195,7 +204,7 @@ The documentation is automatically generated from script files:
 
 Automatically deploys on push to `release` branch via GitHub Actions.
 
-**URL**: https://ropean.github.io/scripts/
+**URL**: <https://ropean.github.io/scripts/>
 
 ### Cloudflare Pages (Alternative)
 
@@ -244,6 +253,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 ## 🙏 Acknowledgments
 
 Built with:
+
 - [VitePress](https://vitepress.dev/) - Documentation framework
 - [GitHub Actions](https://github.com/features/actions) - CI/CD
 - [Cloudflare Pages](https://pages.cloudflare.com/) - Fast global deployment
@@ -256,4 +266,4 @@ Built with:
 
 ---
 
-**Made with ❤️ by [ropean](https://ropean.org/)** | *Sharing excellence in code, one script at a time*
+**Made with ❤️ by [ropean](https://ropean.org/)** | _Sharing excellence in code, one script at a time_
