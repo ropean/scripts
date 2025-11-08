@@ -15,21 +15,25 @@ hero:
 
 features:
   - icon: 🎨
-    title: Frontend Scripts
+    title: Frontend
     details: React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns
     link: /frontend/
   - icon: ⚙️
-    title: Backend Scripts
+    title: Backend
     details: Node.js applications, API implementations, database integrations, and server-side utilities
     link: /backend/
+  - icon: 🗄️
+    title: Database
+    details: Database utilities, SQL scripts, and data management tools
+    link: /database/
   - icon: 🔧
-    title: Git Tools
+    title: Git
     details: Git automation scripts, LFS configuration, submodule management, and workflow utilities
     link: /git/
-  - icon: 📦
-    title: Node Utilities
-    details: Node.js utilities, package management, deployment tools, and infrastructure scripts
-    link: /node/
+  - icon: ⚡
+    title: Serverless
+    details: Ready-to-use serverless functions and utilities for Cloudflare Workers, AWS Lambda, and edge computing platforms.
+    link: /serverless/
 ---
 
 ## Why This Collection?
