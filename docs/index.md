@@ -47,7 +47,7 @@ This repository is dedicated to sharing high-quality, practical JavaScript code 
 
 Browse the categories above to explore scripts by topic, or use the search function to find specific implementations.
 
-**Looking to contribute or create your own scripts?** Check out our [Script Format Specification](/script-template) to learn about the standardized format and best practices for all scripts in this repository.
+**Looking to contribute or create your own scripts?** Check out our [Script Format Specification](/help/script-template) to learn about the standardized format and best practices for all scripts in this repository.
 
 ---
 
