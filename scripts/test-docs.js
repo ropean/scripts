@@ -69,9 +69,7 @@ function decodeHtmlEntities(text) {
  */
 function extractMetadata(html) {
   const titleMatch = html.match(/<title>([^<]+)<\/title>/);
-  const descMatch = html.match(
-    /<meta name="description" content="([^"]+)"/
-  );
+  const descMatch = html.match(/<meta name="description" content="([^"]+)"/);
 
   return {
     title: titleMatch ? decodeHtmlEntities(titleMatch[1]) : null,
@@ -140,10 +138,7 @@ test("/help/script-template.html should exist with correct metadata", () => {
 // Test 5: /help/navigation-overflow should exist
 test("/help/navigation-overflow.html should exist", () => {
   const filePath = path.join(DIST_DIR, "help", "navigation-overflow.html");
-  assert(
-    fileExists(filePath),
-    "/help/navigation-overflow.html does not exist"
-  );
+  assert(fileExists(filePath), "/help/navigation-overflow.html does not exist");
 });
 
 // Test 6: Check sidebar.json has correct help entries
@@ -206,7 +201,9 @@ test("index.md should link to /help/script-template", () => {
 console.log("\n" + "=".repeat(50));
 console.log(`Tests completed: ${passed + failed}`);
 console.log(`✅ Passed: ${passed}`);
-console.log(`❌ Failed: ${failed}`);
+if (failed > 0) {
+  console.log(`❌ Failed: ${failed}`);
+}
 console.log("=".repeat(50));
 
 if (failed > 0) {

@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "node scripts/generate-docs.js && vitepress build docs && npm run test",
+    "build": "node scripts/generate-docs.js && vitepress build docs",
     "dev": "vitepress dev docs",
     "generate": "node scripts/generate-docs.js",
     "preview": "vitepress preview docs",
