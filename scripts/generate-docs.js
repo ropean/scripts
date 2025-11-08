@@ -497,6 +497,13 @@ ${categoryInfo.description}
 function generateDocs() {
   console.log("🚀 Starting documentation generation...\n");
 
+  // Clean up old files from previous versions
+  const oldScriptTemplate = path.join(DOCS_DIR, "script-template.md");
+  if (fs.existsSync(oldScriptTemplate)) {
+    fs.unlinkSync(oldScriptTemplate);
+    console.log("🧹 Removed old script-template.md from docs root\n");
+  }
+
   const categories = getCategoryDirectories();
   const sidebarConfig = {};
 
