@@ -459,8 +459,14 @@ function processMdFiles() {
  * @returns {string} Generated markdown content
  */
 function generateMdCategoryIndex(category, categoryInfo, files) {
+  // Escape strings for YAML frontmatter
+  const escapeYaml = (str) => {
+    return JSON.stringify(str.replace(/\n/g, " "));
+  };
+
   let markdown = `---
-title: ${categoryInfo.title}
+title: ${escapeYaml(categoryInfo.title)}
+description: ${escapeYaml(categoryInfo.description)}
 ---
 
 # ${categoryInfo.icon} ${categoryInfo.title}
