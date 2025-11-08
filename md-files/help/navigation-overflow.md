@@ -1,6 +1,6 @@
 ---
-title: 'Navigation Menu Overflow Handling'
-description: 'How the navigation menu adapts when there are many categories'
+title: "Navigation Menu Overflow Handling"
+description: "How the navigation menu adapts when there are many categories"
 ---
 
 # Navigation Menu Overflow Handling
@@ -10,13 +10,15 @@ description: 'How the navigation menu adapts when there are many categories'
 The documentation system automatically adjusts the navigation menu structure based on the number of categories:
 
 ### Flat Navigation (≤6 items)
+
 When there are **6 or fewer** total categories, the navigation displays as a simple flat menu:
 
 ```
-Home | Backend | Database | Frontend | Git | Node.js | Help & Documentation
+Home | Backend | Database | Frontend | Git | Node.js | Documentation
 ```
 
 ### Grouped Navigation (>6 items)
+
 When there are **more than 6** categories, the navigation automatically switches to a grouped dropdown menu:
 
 ```
@@ -24,6 +26,7 @@ Home | Scripts ▼ | Documentation ▼
 ```
 
 Where:
+
 - **Scripts** dropdown contains all categories from `script-files/`
 - **Documentation** dropdown contains all categories from `md-files/`
 
@@ -35,14 +38,15 @@ In your `config.js` file, you can set the `order` property to control the positi
 
 ```javascript
 module.exports = {
-  title: 'Category Name',
-  description: 'Category description',
-  icon: '📚',
+  title: "Category Name",
+  description: "Category description",
+  icon: "📚",
   order: 100, // Higher numbers appear later in the menu
 };
 ```
 
 ### Default Ordering
+
 - Script categories (from `script-files/`): `order: 0` (default)
 - Documentation categories (from `md-files/`): `order: 999` (default)
 

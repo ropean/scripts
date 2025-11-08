@@ -78,7 +78,7 @@ describe("Documentation Build Tests", () => {
 
     assert.strictEqual(
       metadata.title,
-      "Help & Documentation | Scripts Collection",
+      "Docs | Scripts Collection",
       `Wrong title: ${metadata.title}`
     );
     assert.strictEqual(
@@ -90,7 +90,10 @@ describe("Documentation Build Tests", () => {
 
   test("/help/script-template.html should exist with correct metadata", () => {
     const filePath = path.join(DIST_DIR, "help", "script-template.html");
-    assert.ok(fileExists(filePath), "/help/script-template.html does not exist");
+    assert.ok(
+      fileExists(filePath),
+      "/help/script-template.html does not exist"
+    );
 
     const html = readFile(filePath);
     const metadata = extractMetadata(html);
@@ -109,7 +112,10 @@ describe("Documentation Build Tests", () => {
 
   test("/help/navigation-overflow.html should exist", () => {
     const filePath = path.join(DIST_DIR, "help", "navigation-overflow.html");
-    assert.ok(fileExists(filePath), "/help/navigation-overflow.html does not exist");
+    assert.ok(
+      fileExists(filePath),
+      "/help/navigation-overflow.html does not exist"
+    );
   });
 
   test("sidebar.json should have /help/ entries", () => {
@@ -138,18 +144,14 @@ describe("Documentation Build Tests", () => {
     );
   });
 
-  test("nav.json should have Help & Documentation entry", () => {
+  test("nav.json should have Docs entry", () => {
     const navPath = path.join(DOCS_DIR, ".vitepress", "nav.json");
     assert.ok(fileExists(navPath), "nav.json does not exist");
 
     const nav = JSON.parse(readFile(navPath));
     const helpNav = nav.find((item) => item.link === "/help/");
     assert.ok(helpNav, "No /help/ entry in nav");
-    assert.strictEqual(
-      helpNav.text,
-      "Help & Documentation",
-      `Wrong nav text: ${helpNav.text}`
-    );
+    assert.strictEqual(helpNav.text, "Docs", `Wrong nav text: ${helpNav.text}`);
   });
 
   test("index.md should link to /help/script-template", () => {
