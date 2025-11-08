@@ -14,7 +14,10 @@
     "generate": "node scripts/generate-docs.js",
     "preview": "vitepress preview docs",
     "ship": "wrangler pages deploy",
-    "test": "node scripts/test-docs.js"
+    "test": "node --test test/**/*.test.js",
+    "test:docs": "node --test test/docs.test.js",
+    "test:features": "node --test test/update-features.test.js",
+    "update-features": "node scripts/update-features.js"
   },
   "devDependencies": {
     "terser": "^5.44.1",
