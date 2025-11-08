@@ -1,5 +1,7 @@
 module.exports = {
-  title: 'Frontend',
-  description: 'React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns',
-  icon: '🎨',
+  title: "Frontend",
+  description:
+    "React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns",
+  icon: "🎨",
+  order: 1,
 };
