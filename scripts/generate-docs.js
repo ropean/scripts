@@ -352,7 +352,10 @@ function extractMarkdownMetadata(filePath) {
       if (line.startsWith("title:")) {
         metadata.title = line.replace("title:", "").trim().replace(/['"]/g, "");
       } else if (line.startsWith("description:")) {
-        metadata.description = line.replace("description:", "").trim().replace(/['"]/g, "");
+        metadata.description = line
+          .replace("description:", "")
+          .trim()
+          .replace(/['"]/g, "");
       }
     }
   }
@@ -497,6 +500,13 @@ ${categoryInfo.description}
 function generateDocs() {
   console.log("🚀 Starting documentation generation...\n");
 
+  // Clean up old files from previous versions
+  const oldScriptTemplate = path.join(DOCS_DIR, "script-template.md");
+  if (fs.existsSync(oldScriptTemplate)) {
+    fs.unlinkSync(oldScriptTemplate);
+    console.log("🧹 Removed old script-template.md from docs root\n");
+  }
+
   const categories = getCategoryDirectories();
   const sidebarConfig = {};
 
@@ -570,7 +580,8 @@ function generateDocs() {
   });
 
   // Process MD files
-  const { sidebarConfig: mdSidebarConfig, navItems: mdNavItems } = processMdFiles();
+  const { sidebarConfig: mdSidebarConfig, navItems: mdNavItems } =
+    processMdFiles();
 
   // Merge sidebar configs (script-files first, then md-files)
   const mergedSidebarConfig = { ...sidebarConfig, ...mdSidebarConfig };
@@ -658,7 +669,9 @@ function updateNavigation(categories, mdNavItems = []) {
 
   fs.writeFileSync(navConfigPath, JSON.stringify(navItems, null, 2));
   console.log("📝 Updated navigation configuration");
-  console.log(`   Navigation style: ${allNavItems.length <= 6 ? "flat" : "grouped"}`);
+  console.log(
+    `   Navigation style: ${allNavItems.length <= 6 ? "flat" : "grouped"}`
+  );
 }
 
 // Run the generator
