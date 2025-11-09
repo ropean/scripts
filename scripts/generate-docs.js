@@ -305,8 +305,14 @@ function getMdCategoryDirectories() {
  * @returns {object} Metadata with title and description
  */
 function extractMarkdownMetadata(filePath) {
-  const content = fs.readFileSync(filePath, "utf-8");
-  const lines = content.split("\n");
+  let content = fs.readFileSync(filePath, "utf-8");
+
+  // Remove BOM if present
+  if (content.charCodeAt(0) === 0xfeff) {
+    content = content.slice(1);
+  }
+
+  const lines = content.split("\n").map((line) => line.trim());
 
   const metadata = {
     title: "",
@@ -324,9 +330,19 @@ function extractMarkdownMetadata(filePath) {
 
       // Parse YAML-like frontmatter
       if (line.startsWith("title:")) {
-        metadata.title = line.replace("title:", "").trim().replace(/['"]/g, "");
+        let value = line.replace("title:", "").trim();
+        // Remove surrounding quotes (single or double)
+        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1);
+        }
+        metadata.title = value;
       } else if (line.startsWith("description:")) {
-        metadata.description = line.replace("description:", "").trim().replace(/['"]/g, "");
+        let value = line.replace("description:", "").trim();
+        // Remove surrounding quotes (single or double)
+        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+          value = value.slice(1, -1);
+        }
+        metadata.description = value;
       }
     }
   }
@@ -454,12 +470,15 @@ ${categoryInfo.description}
     const sourcePath = path.join(MD_FILES_DIR, category, file);
     const metadata = extractMarkdownMetadata(sourcePath);
 
-    markdown += `### [${metadata.title}](./${slug})\n\n`;
+    // Use metadata title if available, otherwise use slug
+    const displayTitle = metadata.title || slug;
+    markdown += `### [${displayTitle}](./${slug})\n\n`;
+
+    // Add description if available
     if (metadata.description) {
       markdown += `${metadata.description}\n\n`;
     }
   });
-
   return markdown;
 }
 
