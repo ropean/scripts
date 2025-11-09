@@ -469,12 +469,27 @@ ${categoryInfo.description}
 function generateDocs() {
   console.log("🚀 Starting documentation generation...\n");
 
-  // Clean up old files from previous versions
-  const oldScriptTemplate = path.join(DOCS_DIR, "script-template.md");
-  if (fs.existsSync(oldScriptTemplate)) {
-    fs.unlinkSync(oldScriptTemplate);
-    console.log("🧹 Removed old script-template.md from docs root\n");
-  }
+  // 🧹 Clean DOCS_DIR of unwanted files and folders
+  const excludes = [".vitepress", "public", "index.md", "README.md"];
+  fs.readdirSync(DOCS_DIR).forEach((item) => {
+    if (!excludes.includes(item)) {
+      const targetPath = path.join(DOCS_DIR, item);
+
+      if (fs.lstatSync(targetPath).isDirectory()) {
+        fs.rmSync(targetPath, { recursive: true, force: true });
+        console.log(`🧹 Removed directory: ${item}`);
+      } else {
+        fs.unlinkSync(targetPath);
+        console.log(`🧹 Removed file: ${item}`);
+      }
+    }
+  });
+  // remove .vitepress/dist directory if exists
+  // const distPath = path.join(DOCS_DIR, ".vitepress", "dist");
+  // if (fs.existsSync(distPath)) {
+  //   fs.rmSync(distPath, { recursive: true, force: true });
+  //   console.log(`🧹 Removed directory: .vitepress/dist`);
+  // }
 
   const categories = getCategoryDirectories();
   const sidebarConfig = {};
