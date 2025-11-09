@@ -242,8 +242,7 @@ ${metadata.description}
 - **Language**: ${language.toUpperCase()}
 
 ---
-
-[View on GitHub](https://github.com/ropean/scripts/blob/main/${category}/${metadata.filename})
+[View on GitHub](https://github.com/ropean/scripts/blob/main/script-files/${category}/${metadata.filename})
 `;
 
   return markdown;
