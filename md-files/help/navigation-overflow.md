@@ -34,7 +34,7 @@ Where:
 
 ### Setting Menu Order
 
-In your `config.js` file, you can set the `order` property to control the position in the menu:
+In your `.config.js` file, you can set the `order` property to control the position in the menu:
 
 ```javascript
 module.exports = {

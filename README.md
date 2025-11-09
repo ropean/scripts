@@ -138,7 +138,7 @@ For shell scripts:
 
 ### 3. Add Category Configuration (if new category)
 
-Create `config.js` in your category directory:
+Create `.config.js` in your category directory:
 
 ```javascript
 module.exports = {
@@ -170,7 +170,7 @@ git commit -m "Add: your script description"
 scripts/
 ├── .script-template.md       # Script format specification
 ├── frontend/                 # Frontend scripts
-│   ├── config.js            # Category configuration
+│   ├── .config.js            # Category configuration
 │   └── *.js                 # Script files
 ├── backend/                  # Backend scripts
 ├── git/                      # Git tools

@@ -1,6 +1,6 @@
 ---
-title: 'Script Format Specification'
-description: 'This document defines the standard format for all scripts in this repository.'
+title: "Script Format Specification"
+description: "This document defines the standard format for all scripts in this repository."
 ---
 
 # Script Format Specification
@@ -95,25 +95,25 @@ Usage example:
 
 ## Directory Configuration
 
-Each category directory SHOULD contain a `config.js` file:
+Each category directory SHOULD contain a `.config.js` file:
 
 ```javascript
-// config.js
+// .config.js
 module.exports = {
-  title: 'Category Title',
-  description: 'Brief description of this category',
-  icon: '🎨', // Emoji icon for the category
+  title: "Category Title",
+  description: "Brief description of this category",
+  icon: "🎨", // Emoji icon for the category
   order: 1, // Display order (optional)
 };
 ```
 
-### Example: frontend/config.js
+### Example: frontend/.config.js
 
 ```javascript
 module.exports = {
-  title: 'Frontend Scripts',
-  description: 'React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns',
-  icon: '🎨',
+  title: "Frontend Scripts",
+  description: "React components, vanilla JavaScript utilities, DOM manipulation, and modern UI patterns",
+  icon: "🎨",
 };
 ```
 

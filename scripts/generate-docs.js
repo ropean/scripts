@@ -19,15 +19,7 @@ const SIDEBAR_FILE = path.join(DOCS_DIR, ".vitepress", "sidebar.json");
 const EXCLUDED_DIRS = [];
 
 // Supported script file extensions
-const SUPPORTED_EXTENSIONS = [
-  ".js",
-  ".sh",
-  ".py",
-  ".ts",
-  ".mjs",
-  ".cjs",
-  ".bash",
-];
+const SUPPORTED_EXTENSIONS = [".js", ".sh", ".py", ".ts", ".mjs", ".cjs", ".bash"];
 
 /**
  * Get all category directories (excludes system directories)
@@ -38,20 +30,18 @@ function getCategoryDirectories() {
     .readdirSync(SCRIPT_FILES_DIR)
     .filter((name) => {
       const fullPath = path.join(SCRIPT_FILES_DIR, name);
-      return (
-        fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name)
-      );
+      return fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name);
     })
     .sort();
 }
 
 /**
- * Load category configuration from config.js
+ * Load category configuration from .config.js
  * @param {string} categoryPath - Path to category directory
  * @returns {object} Category configuration
  */
 function loadCategoryConfig(categoryPath) {
-  const configPath = path.join(categoryPath, "config.js");
+  const configPath = path.join(categoryPath, ".config.js");
 
   if (fs.existsSync(configPath)) {
     try {
@@ -59,7 +49,7 @@ function loadCategoryConfig(categoryPath) {
       delete require.cache[require.resolve(configPath)];
       return require(configPath);
     } catch (error) {
-      console.warn(`   ⚠️  Failed to load config.js: ${error.message}`);
+      console.warn(`   ⚠️  Failed to load .config.js: ${error.message}`);
     }
   }
 
@@ -106,10 +96,7 @@ function extractMetadata(filePath) {
     }
 
     // Detect start of header block
-    if (
-      !inHeaderBlock &&
-      (line.startsWith("/**") || line.startsWith('"""') || line.startsWith("#"))
-    ) {
+    if (!inHeaderBlock && (line.startsWith("/**") || line.startsWith('"""') || line.startsWith("#"))) {
       inHeaderBlock = true;
       headerLines.push(line);
       continue;
@@ -120,11 +107,7 @@ function extractMetadata(filePath) {
       headerLines.push(line);
 
       // Detect end of header block
-      if (
-        line.includes("*/") ||
-        line.includes('"""') ||
-        (!line.startsWith("#") && !line.startsWith("*") && line.length > 0)
-      ) {
+      if (line.includes("*/") || line.includes('"""') || (!line.startsWith("#") && !line.startsWith("*") && line.length > 0)) {
         break;
       }
     }
@@ -156,11 +139,7 @@ function extractMetadata(filePath) {
       metadata.see = cleanLine.replace("@see", "").trim();
     } else if (cleanLine.startsWith("@note")) {
       metadata.note = cleanLine.replace("@note", "").trim();
-    } else if (
-      !metadata.description &&
-      cleanLine &&
-      !cleanLine.startsWith("@")
-    ) {
+    } else if (!metadata.description && cleanLine && !cleanLine.startsWith("@")) {
       // Fallback: use first non-tag line as description
       if (!metadata.title) {
         metadata.title = cleanLine;
@@ -236,8 +215,7 @@ ${metadata.description}
     markdown += `## Metadata\n\n`;
     if (metadata.author) markdown += `- **Author**: ${metadata.author}\n`;
     if (metadata.version) markdown += `- **Version**: ${metadata.version}\n`;
-    if (metadata.requires)
-      markdown += `- **Dependencies**: ${metadata.requires}\n`;
+    if (metadata.requires) markdown += `- **Dependencies**: ${metadata.requires}\n`;
     if (metadata.see) markdown += `- **See Also**: ${metadata.see}\n`;
     markdown += `\n`;
   }
@@ -265,9 +243,7 @@ ${metadata.description}
 
 ---
 
-[View on GitHub](https://github.com/ropean/scripts/blob/main/${category}/${
-    metadata.filename
-  })
+[View on GitHub](https://github.com/ropean/scripts/blob/main/${category}/${metadata.filename})
 `;
 
   return markdown;
@@ -318,9 +294,7 @@ function getMdCategoryDirectories() {
     .readdirSync(MD_FILES_DIR)
     .filter((name) => {
       const fullPath = path.join(MD_FILES_DIR, name);
-      return (
-        fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name)
-      );
+      return fs.statSync(fullPath).isDirectory() && !EXCLUDED_DIRS.includes(name);
     })
     .sort();
 }
@@ -352,10 +326,7 @@ function extractMarkdownMetadata(filePath) {
       if (line.startsWith("title:")) {
         metadata.title = line.replace("title:", "").trim().replace(/['"]/g, "");
       } else if (line.startsWith("description:")) {
-        metadata.description = line
-          .replace("description:", "")
-          .trim()
-          .replace(/['"]/g, "");
+        metadata.description = line.replace("description:", "").trim().replace(/['"]/g, "");
       }
     }
   }
@@ -399,9 +370,7 @@ function processMdFiles() {
     }
 
     // Get all markdown files in the category
-    const files = fs
-      .readdirSync(categoryDir)
-      .filter((f) => f.endsWith(".md") && f !== "README.md");
+    const files = fs.readdirSync(categoryDir).filter((f) => f.endsWith(".md") && f !== "README.md");
 
     if (files.length === 0) {
       console.log(`   ℹ️  No markdown files found`);
@@ -533,7 +502,7 @@ function generateDocs() {
     // Get all script files
     const files = fs.readdirSync(categoryDir).filter((f) => {
       const ext = path.extname(f);
-      return SUPPORTED_EXTENSIONS.includes(ext) && f !== "config.js";
+      return SUPPORTED_EXTENSIONS.includes(ext) && f !== ".config.js";
     });
 
     if (files.length === 0) {
@@ -559,11 +528,7 @@ function generateDocs() {
     });
 
     // Generate category index
-    const indexMarkdown = generateCategoryIndex(
-      category,
-      categoryInfo,
-      scripts
-    );
+    const indexMarkdown = generateCategoryIndex(category, categoryInfo, scripts);
     fs.writeFileSync(path.join(docsCategory, "index.md"), indexMarkdown);
     console.log(`   ✅ Generated: index.md\n`);
 
@@ -580,8 +545,7 @@ function generateDocs() {
   });
 
   // Process MD files
-  const { sidebarConfig: mdSidebarConfig, navItems: mdNavItems } =
-    processMdFiles();
+  const { sidebarConfig: mdSidebarConfig, navItems: mdNavItems } = processMdFiles();
 
   // Merge sidebar configs (script-files first, then md-files)
   const mergedSidebarConfig = { ...sidebarConfig, ...mdSidebarConfig };
@@ -596,18 +560,8 @@ function generateDocs() {
   console.log(`📊 Summary:`);
   console.log(`   - Script categories: ${categories.length}`);
   console.log(`   - MD categories: ${mdNavItems.length}`);
-  console.log(
-    `   - Total scripts: ${Object.values(sidebarConfig).reduce(
-      (sum, cat) => sum + cat[0].items.length,
-      0
-    )}`
-  );
-  console.log(
-    `   - Total MD files: ${Object.values(mdSidebarConfig).reduce(
-      (sum, cat) => sum + cat[0].items.length,
-      0
-    )}`
-  );
+  console.log(`   - Total scripts: ${Object.values(sidebarConfig).reduce((sum, cat) => sum + cat[0].items.length, 0)}`);
+  console.log(`   - Total MD files: ${Object.values(mdSidebarConfig).reduce((sum, cat) => sum + cat[0].items.length, 0)}`);
 }
 
 /**
@@ -639,19 +593,14 @@ function updateNavigation(categories, mdNavItems = []) {
   });
 
   // Combine and sort by order
-  const allNavItems = [...scriptNavItems, ...mdNavItems].sort(
-    (a, b) => (a.order || 0) - (b.order || 0)
-  );
+  const allNavItems = [...scriptNavItems, ...mdNavItems].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   // Determine navigation structure based on number of items
   let navItems;
 
   if (allNavItems.length <= 6) {
     // Simple flat navigation for small number of items
-    navItems = [
-      { text: "Home", link: "/" },
-      ...allNavItems.map(({ text, link }) => ({ text, link })),
-    ];
+    navItems = [{ text: "Home", link: "/" }, ...allNavItems.map(({ text, link }) => ({ text, link }))];
   } else {
     // Grouped navigation for many items
     navItems = [
@@ -669,9 +618,7 @@ function updateNavigation(categories, mdNavItems = []) {
 
   fs.writeFileSync(navConfigPath, JSON.stringify(navItems, null, 2));
   console.log("📝 Updated navigation configuration");
-  console.log(
-    `   Navigation style: ${allNavItems.length <= 6 ? "flat" : "grouped"}`
-  );
+  console.log(`   Navigation style: ${allNavItems.length <= 6 ? "flat" : "grouped"}`);
 }
 
 // Run the generator

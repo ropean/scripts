@@ -8,11 +8,7 @@ const assert = require("node:assert");
 const fs = require("fs");
 const path = require("path");
 
-const {
-  loadCategoryConfig,
-  getCategoryConfigs,
-  generateFeaturesYaml,
-} = require("../scripts/update-features.js");
+const { loadCategoryConfig, getCategoryConfigs, generateFeaturesYaml } = require("../scripts/update-features.js");
 
 const ROOT_DIR = path.join(__dirname, "..");
 const SCRIPT_FILES_DIR = path.join(ROOT_DIR, "script-files");
@@ -20,7 +16,7 @@ const DOCS_INDEX = path.join(ROOT_DIR, "docs", "index.md");
 
 describe("Update Features Script Tests", () => {
   describe("loadCategoryConfig", () => {
-    test("should load config.js from category directory", () => {
+    test("should load .config.js from category directory", () => {
       const categoryPath = path.join(SCRIPT_FILES_DIR, "frontend");
       const config = loadCategoryConfig(categoryPath, "frontend");
 
@@ -31,7 +27,7 @@ describe("Update Features Script Tests", () => {
       assert.strictEqual(config.link, "/frontend/", "Config should have correct link");
     });
 
-    test("should return default config if config.js doesn't exist", () => {
+    test("should return default config if .config.js doesn't exist", () => {
       const tempDir = fs.mkdtempSync(path.join(__dirname, "temp-"));
       const config = loadCategoryConfig(tempDir, "testcategory");
 
@@ -70,7 +66,9 @@ describe("Update Features Script Tests", () => {
         const nextOrder = categories[i + 1].order || 999;
         assert.ok(
           currentOrder <= nextOrder,
-          `Categories should be sorted by order: ${categories[i].title} (${currentOrder}) should come before ${categories[i + 1].title} (${nextOrder})`
+          `Categories should be sorted by order: ${categories[i].title} (${currentOrder}) should come before ${
+            categories[i + 1].title
+          } (${nextOrder})`
         );
       }
     });
@@ -92,10 +90,7 @@ describe("Update Features Script Tests", () => {
       assert.ok(yaml.startsWith("features:"), "YAML should start with 'features:'");
       assert.ok(yaml.includes("icon: 🧪"), "YAML should include icon");
       assert.ok(yaml.includes("title: Test Category"), "YAML should include title");
-      assert.ok(
-        yaml.includes("details: Test description"),
-        "YAML should include description"
-      );
+      assert.ok(yaml.includes("details: Test description"), "YAML should include description");
       assert.ok(yaml.includes("link: /test/"), "YAML should include link");
     });
 
@@ -131,14 +126,8 @@ describe("Update Features Script Tests", () => {
 
       // Verify all categories are in the YAML
       categories.forEach((cat) => {
-        assert.ok(
-          yaml.includes(cat.title),
-          `YAML should include category: ${cat.title}`
-        );
-        assert.ok(
-          yaml.includes(cat.icon),
-          `YAML should include icon: ${cat.icon}`
-        );
+        assert.ok(yaml.includes(cat.title), `YAML should include category: ${cat.title}`);
+        assert.ok(yaml.includes(cat.icon), `YAML should include icon: ${cat.icon}`);
       });
     });
 
@@ -146,10 +135,7 @@ describe("Update Features Script Tests", () => {
       assert.ok(fs.existsSync(DOCS_INDEX), "docs/index.md should exist");
 
       const content = fs.readFileSync(DOCS_INDEX, "utf-8");
-      assert.ok(
-        content.includes("features:"),
-        "index.md should have features section"
-      );
+      assert.ok(content.includes("features:"), "index.md should have features section");
     });
   });
 });

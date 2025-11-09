@@ -14,13 +14,13 @@ const SCRIPT_FILES_DIR = path.join(ROOT_DIR, "script-files");
 const DOCS_INDEX = path.join(ROOT_DIR, "docs", "index.md");
 
 /**
- * Load category configuration from config.js
+ * Load category configuration from .config.js
  * @param {string} categoryPath - Path to category directory
  * @param {string} categoryName - Name of the category directory
  * @returns {object} Category configuration with defaults
  */
 function loadCategoryConfig(categoryPath, categoryName) {
-  const configPath = path.join(categoryPath, "config.js");
+  const configPath = path.join(categoryPath, ".config.js");
 
   if (fs.existsSync(configPath)) {
     try {
@@ -32,7 +32,7 @@ function loadCategoryConfig(categoryPath, categoryName) {
         link: `/${categoryName}/`,
       };
     } catch (error) {
-      console.warn(`   ⚠️  Failed to load ${categoryName}/config.js: ${error.message}`);
+      console.warn(`   ⚠️  Failed to load ${categoryName}/.config.js: ${error.message}`);
     }
   }
 
@@ -78,12 +78,7 @@ function getCategoryConfigs() {
  */
 function generateFeaturesYaml(categories) {
   const features = categories.map((cat) => {
-    return [
-      `  - icon: ${cat.icon}`,
-      `    title: ${cat.title}`,
-      `    details: ${cat.description}`,
-      `    link: ${cat.link}`,
-    ].join("\n");
+    return [`  - icon: ${cat.icon}`, `    title: ${cat.title}`, `    details: ${cat.description}`, `    link: ${cat.link}`].join("\n");
   });
 
   return `features:\n${features.join("\n")}`;
