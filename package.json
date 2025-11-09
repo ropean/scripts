@@ -9,7 +9,7 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "npm run gf && npm run gd && vitepress build docs",
+    "build": "npm run gf && npm run gd && vitepress build docs && npm run gr",
     "dev": "vitepress dev docs",
     "generate": "node scripts/generate-docs.js",
     "preview": "vitepress preview docs",
@@ -18,7 +18,8 @@
     "test:docs": "node --test test/docs.test.js",
     "test:features": "node --test test/update-features.test.js",
     "gd": "node scripts/generate-docs.js",
-    "gf": "node scripts/generate-features.js"
+    "gf": "node scripts/generate-features.js",
+    "gr": "node scripts/generate-robots.mjs"
   },
   "devDependencies": {
     "terser": "^5.44.1",
