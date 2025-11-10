@@ -3,7 +3,7 @@
 > A curated collection of production-ready scripts and code examples for modern web development
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Documentation](https://img.shields.io/badge/docs-live-brightgreen.svg)](https://ropean.github.io/scripts/)
+[![Documentation](https://img.shields.io/badge/docs-live-brightgreen.svg)](https://scripts.aceapp.dev/)
 
 ## 📖 About
 
