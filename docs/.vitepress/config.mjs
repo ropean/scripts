@@ -23,7 +23,7 @@ export default defineConfig({
   ],
 
   head: [
-    ["link", { rel: "icon", href: "/logo.svg" }],
+    ["link", { rel: "icon", href: "/favicon.ico" }],
     ["link", { rel: "apple-touch-icon", href: "/logo.svg" }],
     ["meta", { name: "theme-color", content: "#3eaf7c" }],
     ["meta", { name: "keywords", content: "javascript, scripts, code examples, frontend, backend, git, node.js, development, programming" }],
