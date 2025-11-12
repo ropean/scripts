@@ -13,7 +13,7 @@
     "dev": "vitepress dev docs",
     "generate": "node scripts/generate-docs.js",
     "preview": "vitepress preview docs",
-    "ship": "wrangler pages deploy",
+    "ship": "wrangler pages deploy docs/.vitepress/dist --project-name=scripts --branch=main",
     "test": "node --test test/**/*.test.js",
     "test:docs": "node --test test/docs.test.js",
     "test:features": "node --test test/update-features.test.js",
