@@ -2,7 +2,7 @@
 # @title Supabase PostgreSQL Database & User Setup
 # @description Interactive script to create a dedicated database and user with full privileges in Supabase PostgreSQL
 # @author Wei
-# @version 1.0.0
+# @version 1.1.0
 #
 # This script creates a project-specific database and user account with complete
 # privileges in a Dockerized Supabase PostgreSQL instance. It handles existing
@@ -11,7 +11,9 @@
 # Features:
 # - Two-phase setup: admin connection validation, then database/user creation
 # - Checks for existing databases and users before creation
-# - Grants SUPERUSER privileges for unrestricted access
+# - PostgreSQL 15+ compatible: properly handles new public schema ownership model
+# - Transfers database ownership to user for full public schema access
+# - Grants comprehensive permissions with explicit error checking
 # - Provides connection strings and detailed permission summary
 #
 # @example
@@ -32,6 +34,7 @@ NC='\033[0m'
 
 echo -e "${BLUE}========================================${NC}"
 echo -e "${BLUE}🐘 Supabase PostgreSQL Setup Tool${NC}"
+echo -e "${BLUE}   (PostgreSQL 15+ Compatible)${NC}"
 echo -e "${BLUE}========================================${NC}\n"
 
 # ===== Phase 1: Admin Account Connection =====
@@ -130,22 +133,69 @@ fi
 # Grant privileges
 echo -e "${YELLOW}🔐 Granting privileges...${NC}"
 
-docker exec $CONTAINER_NAME psql -U $ADMIN_USER <<EOF >/dev/null 2>&1
+# ===== IMPORTANT: PostgreSQL 15+ Schema Ownership Model =====
+# In PostgreSQL 15 and later, the 'public' schema is owned by the predefined
+# role 'pg_database_owner', which represents the owner of the database.
+# To grant full access to the public schema, the user must become the database owner.
+#
+# Step 1: Grant role membership to allow admin to transfer ownership
+# This is required because ALTER DATABASE ... OWNER requires the ability to SET ROLE
+echo -e "${YELLOW}  → Preparing role membership for ownership transfer...${NC}"
+docker exec $CONTAINER_NAME psql -U $ADMIN_USER -c "GRANT $DB_USER TO $ADMIN_USER;" 2>&1 | grep -v "^GRANT ROLE$" || true
+
+# Step 2: Grant basic privileges and user attributes
+echo -e "${YELLOW}  → Granting database privileges and user attributes...${NC}"
+docker exec $CONTAINER_NAME psql -U $ADMIN_USER <<EOF
 GRANT ALL PRIVILEGES ON DATABASE $DB_NAME TO $DB_USER;
 ALTER USER $DB_USER CREATEDB;
 ALTER USER $DB_USER CREATEROLE;
-ALTER DATABASE $DB_NAME OWNER TO $DB_USER;
 EOF
 
-# Connect to the database and set schema permissions
-docker exec $CONTAINER_NAME psql -U $ADMIN_USER -d $DB_NAME <<EOF >/dev/null 2>&1
-ALTER SCHEMA public OWNER TO $DB_USER;
+if [ $? -ne 0 ]; then
+  echo -e "${RED}✗ Failed to grant basic privileges${NC}"
+  exit 1
+fi
+
+# Step 3: Transfer database ownership
+# This is CRITICAL for PostgreSQL 15+ as it gives the user automatic access to
+# the 'public' schema through the 'pg_database_owner' role
+echo -e "${YELLOW}  → Transferring database ownership to $DB_USER...${NC}"
+docker exec $CONTAINER_NAME psql -U $ADMIN_USER -c "ALTER DATABASE $DB_NAME OWNER TO $DB_USER;"
+
+if [ $? -ne 0 ]; then
+  echo -e "${RED}✗ Failed to transfer database ownership${NC}"
+  exit 1
+fi
+
+# Step 4: Grant explicit schema permissions
+# While the user now owns the database (and thus has access to public schema),
+# we explicitly grant permissions for clarity and compatibility
+echo -e "${YELLOW}  → Setting schema permissions...${NC}"
+docker exec $CONTAINER_NAME psql -U $ADMIN_USER -d $DB_NAME <<EOF
+-- Grant usage and creation rights on public schema
+GRANT CREATE ON SCHEMA public TO $DB_USER;
+GRANT USAGE ON SCHEMA public TO $DB_USER;
+
+-- Grant all privileges on existing objects
 GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO $DB_USER;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO $DB_USER;
 GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public TO $DB_USER;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO $DB_USER;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO $DB_USER;
-ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO $DB_USER;
+
+-- Set default privileges for future objects created by postgres role
+ALTER DEFAULT PRIVILEGES FOR ROLE $ADMIN_USER IN SCHEMA public
+  GRANT ALL ON TABLES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $ADMIN_USER IN SCHEMA public
+  GRANT ALL ON SEQUENCES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $ADMIN_USER IN SCHEMA public
+  GRANT ALL ON FUNCTIONS TO $DB_USER;
+
+-- Set default privileges for future objects created by the user itself
+ALTER DEFAULT PRIVILEGES FOR ROLE $DB_USER IN SCHEMA public
+  GRANT ALL ON TABLES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $DB_USER IN SCHEMA public
+  GRANT ALL ON SEQUENCES TO $DB_USER;
+ALTER DEFAULT PRIVILEGES FOR ROLE $DB_USER IN SCHEMA public
+  GRANT ALL ON FUNCTIONS TO $DB_USER;
 EOF
 
 if [ $? -eq 0 ]; then
@@ -166,11 +216,18 @@ if [ $? -eq 0 ]; then
   echo -e "  ${GREEN}postgresql://$DB_USER:$DB_PASSWORD@$DB_HOST:$DB_PORT/$DB_NAME${NC}\n"
 
   echo -e "${BLUE}🔑 Granted Permissions:${NC}"
-  echo -e "  ✓ Full ownership of database '$DB_NAME'"
+  echo -e "  ✓ Database owner (provides full access to public schema)"
   echo -e "  ✓ CREATE DATABASE privilege"
   echo -e "  ✓ CREATE ROLE privilege"
+  echo -e "  ✓ Full control over public schema"
   echo -e "  ✓ Full control over all tables, sequences, and functions"
   echo -e "  ✓ Default privileges for future objects\n"
+
+  echo -e "${CYAN}📚 Note: PostgreSQL 15+ Schema Ownership${NC}"
+  echo -e "  In PostgreSQL 15+, the 'public' schema is owned by 'pg_database_owner'."
+  echo -e "  User '$DB_USER' has been made the database owner, which automatically"
+  echo -e "  grants full access to the public schema. This ensures compatibility"
+  echo -e "  with modern ORMs like Prisma.\n"
 else
   echo -e "\n${RED}========================================${NC}"
   echo -e "${RED}✗ Setup failed, please check error messages above${NC}"
