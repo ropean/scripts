@@ -36,7 +36,7 @@ export default defineConfig({
       },
     ],
     ["meta", { property: "og:type", content: "website" }],
-    ["meta", { property: "og:url", content: "https://ropean.github.io/scripts/" }],
+    ["meta", { property: "og:url", content: "https://scripts.aceapp.dev/" }],
     ["meta", { name: "twitter:card", content: "summary" }],
     ["meta", { name: "twitter:title", content: "Scripts Collection" }],
     ["meta", { name: "twitter:description", content: "A curated collection of excellent JavaScript code examples" }],
@@ -61,7 +61,7 @@ export default defineConfig({
 
   // Sitemap for SEO
   sitemap: {
-    hostname: "https://ropean.github.io/scripts/",
+    hostname: "https://scripts.aceapp.dev/",
   },
 
   themeConfig: {
