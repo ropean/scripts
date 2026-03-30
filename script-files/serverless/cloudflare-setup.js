@@ -82,8 +82,7 @@
 
 import { execSync } from 'child_process';
 import { createInterface } from 'readline';
-import { existsSync, readFileSync, writeFileSync, appendFileSync } from 'fs';
-import { randomBytes } from 'crypto';
+import { existsSync, writeFileSync } from 'fs';
 
 // ============================================================================
 // Configuration
@@ -145,14 +144,6 @@ function execSilent(command) {
 }
 
 /**
- * Generate random base64 secret
- * @returns {string} Random secret string
- */
-function generateSecret() {
-  return randomBytes(32).toString('base64');
-}
-
-/**
  * Get resource name with environment suffix
  * @param {string} baseName - Base resource name
  * @param {string} env - Environment name
@@ -171,17 +162,17 @@ function getResourceName(baseName, env) {
  */
 function parseArgs() {
   const args = process.argv.slice(2);
-  
+
   // Default to local if no args
   if (args.length === 0) {
     return 'local';
   }
-  
+
   // Parse --env flag
   const envIndex = args.indexOf('--env');
   if (envIndex !== -1 && args[envIndex + 1]) {
     const env = args[envIndex + 1];
-    
+
     if (!VALID_ENVIRONMENTS.includes(env)) {
       console.error(`❌ Invalid environment: "${env}"\n`);
       console.error('Valid environments:');
@@ -199,10 +190,10 @@ function parseArgs() {
       console.error('  node scripts/cloudflare-setup.js --env production   # production environment');
       process.exit(1);
     }
-    
+
     return env;
   }
-  
+
   console.error('❌ Invalid arguments. Use --env flag to specify environment.\n');
   console.error('Usage:');
   console.error('  node scripts/cloudflare-setup.js --env <environment>\n');
@@ -228,70 +219,6 @@ function prompt(question) {
       resolve(['y', 'yes'].includes(answer.toLowerCase().trim()));
     });
   });
-}
-
-// ============================================================================
-// Local Environment Setup
-// ============================================================================
-
-/**
- * Setup local environment (.dev.vars)
- */
-function setupLocalEnvironment() {
-  console.log('=======================================');
-  console.log('API Kit - Local Environment Setup');
-  console.log('=======================================\n');
-
-  console.log('📝 Local environment uses wrangler dev with simulated resources');
-  console.log('📝 No real Cloudflare resources will be created\n');
-
-  const devVarsPath = '.dev.vars';
-  const jwtSecretLine = 'JWT_SECRET';
-
-  // Generate JWT secret
-  const jwtSecret = generateSecret();
-
-  // Check if .dev.vars exists
-  if (existsSync(devVarsPath)) {
-    const content = readFileSync(devVarsPath, 'utf-8');
-    
-    // Check if JWT_SECRET already exists
-    if (content.includes(jwtSecretLine)) {
-      console.log('✅ JWT_SECRET already exists in .dev.vars');
-      console.log('   Skipping to avoid overwriting existing secret\n');
-    } else {
-      // Append JWT_SECRET
-      const newLine = content.endsWith('\n') ? '' : '\n';
-      appendFileSync(devVarsPath, `${newLine}JWT_SECRET=${jwtSecret}\n`);
-      console.log('✅ JWT_SECRET added to .dev.vars');
-      console.log(`   Secret: ${jwtSecret}\n`);
-    }
-  } else {
-    // Create .dev.vars from example if it exists
-    if (existsSync('.dev.vars.example')) {
-      const exampleContent = readFileSync('.dev.vars.example', 'utf-8');
-      const updatedContent = exampleContent.replace(
-        /# JWT_SECRET=.*/,
-        `JWT_SECRET=${jwtSecret}`
-      );
-      writeFileSync(devVarsPath, updatedContent);
-      console.log('✅ Created .dev.vars from .dev.vars.example');
-      console.log(`✅ JWT_SECRET set: ${jwtSecret}\n`);
-    } else {
-      // Create new .dev.vars
-      writeFileSync(devVarsPath, `JWT_SECRET=${jwtSecret}\n`);
-      console.log('✅ Created .dev.vars');
-      console.log(`✅ JWT_SECRET set: ${jwtSecret}\n`);
-    }
-  }
-
-  console.log('=======================================');
-  console.log('✅ Local Setup Complete!');
-  console.log('=======================================\n');
-  console.log('Next steps:');
-  console.log('  1. Run: pnpm install  (or pnpm install)');
-  console.log('  2. Run: pnpm run build');
-  console.log('  3. Run: wrangler dev\n');
 }
 
 // ============================================================================
@@ -336,13 +263,13 @@ class ResourceManager {
       console.log('📋 Fetching R2 buckets...');
       try {
         const output = exec('wrangler r2 bucket list');
-        
+
         // Parse text output format:
         // name:           api-kit-files
         // creation_date:  2025-10-21T17:18:30.289Z
         const buckets = [];
         const lines = output.split('\n');
-        
+
         for (let i = 0; i < lines.length; i++) {
           const line = lines[i].trim();
           if (line.startsWith('name:')) {
@@ -352,7 +279,7 @@ class ResourceManager {
             }
           }
         }
-        
+
         this.r2Cache = buckets;
       } catch (error) {
         console.log('  ⚠️  Warning: Could not fetch R2 buckets');
@@ -372,35 +299,38 @@ class ResourceManager {
       console.log('📋 Fetching D1 databases...');
       try {
         const output = exec('wrangler d1 list');
-        
+
         // Parse table output format:
         // │ uuid                                 │ name                 │ created_at               │ ...
         // │ 22bc420e-0672-4f5d-9e6b-8fcdaa34592d │ api-kit-logs         │ 2025-10-22T04:02:57.242Z │ ...
         const databases = [];
         const lines = output.split('\n');
-        
+
         for (const line of lines) {
           // Skip header, separator, and empty lines
           if (!line.includes('│') || line.includes('uuid') || line.includes('─')) {
             continue;
           }
-          
+
           // Split by │ and extract uuid and name
-          const parts = line.split('│').map(p => p.trim()).filter(p => p);
+          const parts = line
+            .split('│')
+            .map((p) => p.trim())
+            .filter((p) => p);
           if (parts.length >= 2) {
             const uuid = parts[0];
             const name = parts[1];
-            
+
             // Validate UUID format (contains hyphens)
             if (uuid.includes('-') && name && !name.includes('name')) {
               databases.push({
                 database_id: uuid,
-                name: name
+                name: name,
               });
             }
           }
         }
-        
+
         this.d1Cache = databases;
       } catch (error) {
         console.log('  ⚠️  Warning: Could not fetch D1 databases');
@@ -417,7 +347,7 @@ class ResourceManager {
    */
   findKV(name) {
     const list = this.getKVList();
-    return list.find(kv => kv.title === name) || null;
+    return list.find((kv) => kv.title === name) || null;
   }
 
   /**
@@ -427,7 +357,7 @@ class ResourceManager {
    */
   findR2(name) {
     const list = this.getR2List();
-    return list.find(bucket => bucket.name === name) || null;
+    return list.find((bucket) => bucket.name === name) || null;
   }
 
   /**
@@ -437,7 +367,7 @@ class ResourceManager {
    */
   findD1(name) {
     const list = this.getD1List();
-    return list.find(db => db.name === name) || null;
+    return list.find((db) => db.name === name) || null;
   }
 
   /**
@@ -449,13 +379,13 @@ class ResourceManager {
     console.log(`  🔨 Creating KV namespace: ${name}...`);
     const output = exec(`wrangler kv namespace create "${name}"`);
     this.kvCache = null; // Clear cache
-    
+
     // Parse ID from output
     const match = output.match(/id = "([a-f0-9]+)"/);
     if (!match) {
       throw new Error('Failed to parse KV namespace ID from output');
     }
-    
+
     return { title: name, id: match[1] };
   }
 
@@ -468,10 +398,10 @@ class ResourceManager {
     console.log(`  🔨 Creating R2 bucket: ${name}...`);
     exec(`wrangler r2 bucket create "${name}"`);
     this.r2Cache = null; // Clear cache
-    
+
     // Fetch to get details
     const list = this.getR2List(true);
-    return list.find(bucket => bucket.name === name);
+    return list.find((bucket) => bucket.name === name);
   }
 
   /**
@@ -483,13 +413,13 @@ class ResourceManager {
     console.log(`  🔨 Creating D1 database: ${name}...`);
     const output = exec(`wrangler d1 create "${name}"`);
     this.d1Cache = null; // Clear cache
-    
+
     // Parse database_id from output
     const match = output.match(/database_id = "([a-f0-9-]+)"/);
     if (!match) {
       throw new Error('Failed to parse D1 database ID from output');
     }
-    
+
     return { name: name, database_id: match[1] };
   }
 
@@ -499,7 +429,7 @@ class ResourceManager {
    */
   initD1Schema(name) {
     const schemaPath = 'database/schema.sql';
-    
+
     if (!existsSync(schemaPath)) {
       console.log(`  ⚠️  Schema file not found: ${schemaPath}`);
       console.log(`  ⚠️  Skipping schema initialization`);
@@ -507,7 +437,7 @@ class ResourceManager {
     }
 
     console.log(`  🔧 Initializing database schema...`);
-    
+
     // Build command with environment flag if needed
     let command = `wrangler d1 execute "${name}" --file="${schemaPath}"`;
     if (this.env !== 'production') {
@@ -538,7 +468,7 @@ async function setupCloudEnvironment(env) {
 
   // Check prerequisites
   console.log('🔍 Checking prerequisites...');
-  
+
   // Check if wrangler is installed
   if (!execSilent('wrangler --version')) {
     console.error('❌ Wrangler CLI is not installed!');
@@ -570,7 +500,7 @@ async function setupCloudEnvironment(env) {
   for (const resource of RESOURCES.kv) {
     const name = getResourceName(resource.baseName, env);
     console.log(`Setting up ${resource.binding} (${name})...`);
-    
+
     const existing = manager.findKV(name);
     if (existing) {
       console.log(`  ✅ Already exists (ID: ${existing.id})`);
@@ -599,7 +529,7 @@ async function setupCloudEnvironment(env) {
   for (const resource of RESOURCES.r2) {
     const name = getResourceName(resource.baseName, env);
     console.log(`Setting up ${resource.binding} (${name})...`);
-    
+
     const existing = manager.findR2(name);
     if (existing) {
       console.log(`  ✅ Already exists`);
@@ -626,7 +556,7 @@ async function setupCloudEnvironment(env) {
   for (const resource of RESOURCES.d1) {
     const name = getResourceName(resource.baseName, env);
     console.log(`Setting up ${resource.binding} (${name})...`);
-    
+
     const existing = manager.findD1(name);
     if (existing) {
       console.log(`  ✅ Already exists (ID: ${existing.database_id})`);
@@ -643,7 +573,7 @@ async function setupCloudEnvironment(env) {
         database_name: created.name,
         database_id: created.database_id,
       });
-      
+
       // Initialize schema for newly created database
       manager.initD1Schema(name);
     }
@@ -652,29 +582,6 @@ async function setupCloudEnvironment(env) {
 
   // ============================================================
   // Setup JWT Secret
-  // ============================================================
-  console.log('🔐 Setting up JWT Secret...\n');
-
-  // Check if secret already exists
-  const existingSecrets = execSilent('wrangler secret list');
-  if (existingSecrets && existingSecrets.includes('JWT_SECRET')) {
-    console.log('✅ JWT_SECRET already exists');
-    console.log('   Skipping to avoid overwriting existing secret\n');
-  } else {
-    const jwtSecret = generateSecret();
-    console.log(`Generated secret: ${jwtSecret}`);
-    
-    const command = `wrangler secret put JWT_SECRET${env !== 'production' ? ` --env ${env}` : ''}`;
-    console.log('   Setting secret...');
-    try {
-      execSync(command, { input: jwtSecret, encoding: 'utf-8' });
-      console.log('   ✅ JWT_SECRET set successfully\n');
-    } catch (error) {
-      console.log('   ⚠️  Failed to set secret (you may need to set it manually)');
-      console.log(`   Run: echo "${jwtSecret}" | wrangler secret put JWT_SECRET${env !== 'production' ? ` --env ${env}` : ''}\n`);
-    }
-  }
-
   // ============================================================
   // Generate wrangler.toml configuration
   // ============================================================
@@ -705,13 +612,6 @@ async function setupCloudEnvironment(env) {
   console.log(`  ✅ ${createdResources.kv.length} KV Namespaces`);
   console.log(`  ✅ ${createdResources.r2.length} R2 Buckets`);
   console.log(`  ✅ ${createdResources.d1.length} D1 Databases`);
-  console.log(`  ✅ JWT_SECRET configured\n`);
-
-  console.log('Next steps:');
-  console.log('  1. Copy the configuration above into your wrangler.toml');
-  console.log('  2. Run: pnpm install  (or pnpm install)');
-  console.log('  3. Run: pnpm run build');
-  console.log(`  4. Deploy: wrangler deploy${env !== 'production' ? ` --env ${env}` : ''}\n`);
 }
 
 /**
@@ -721,15 +621,10 @@ async function setupCloudEnvironment(env) {
  * @returns {string} wrangler.toml configuration
  */
 function generateWranglerConfig(env, resources) {
+  const prefix = `env.${env}.`;
   const lines = [];
-
-  // Add environment header for non-production
-  if (env !== 'production') {
-    lines.push(`[env.${env}]`);
-    lines.push('');
-  }
-
-  const prefix = env === 'production' ? '' : `env.${env}.`;
+  lines.push(`[env.${env}]`);
+  lines.push('');
 
   // KV Namespaces
   for (const kv of resources.kv) {
@@ -774,10 +669,12 @@ async function main() {
   const env = parseArgs();
 
   if (env === 'local') {
-    setupLocalEnvironment();
-  } else {
-    await setupCloudEnvironment(env);
+    console.log('⚙️  Local environment — no cloud resources needed.');    
+    console.log('⚠️  `wrangler dev` Automatically Creates Local D1 SQLite Databases.');
+    return;
   }
+
+  await setupCloudEnvironment(env);
 }
 
 // Run the script
@@ -786,4 +683,3 @@ main().catch((error) => {
   console.error(error.message);
   process.exit(1);
 });
-
