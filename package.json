@@ -9,11 +9,11 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "pnpm run gf && pnpm run gd && vitepress build docs && pnpm run gr",
+    "build": "npm run gf && npm run gd && vitepress build docs && npm run gr",
     "dev": "vitepress dev docs",
     "generate": "node scripts/generate-docs.js",
     "preview": "vitepress preview docs",
-    "ship": "wrangler pages deploy docs/.vitepress/dist --project-name=scripts --branch=main",
+    "ship": "npm run build && wrangler pages deploy docs/.vitepress/dist --project-name=scripts --branch=main",
     "test": "node --test test/**/*.test.js",
     "test:docs": "node --test test/docs.test.js",
     "test:features": "node --test test/update-features.test.js",
@@ -24,6 +24,5 @@
   "devDependencies": {
     "terser": "^5.44.1",
     "vitepress": "^1.6.4"
-  },
-  "packageManager": "pnpm@10.32.1+sha512.a706938f0e89ac1456b6563eab4edf1d1faf3368d1191fc5c59790e96dc918e4456ab2e67d613de1043d2e8c81f87303e6b40d4ffeca9df15ef1ad567348f2be"
+  }
 }
