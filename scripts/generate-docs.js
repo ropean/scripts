@@ -589,12 +589,49 @@ function generateDocs() {
   // Update navigation (script-files first, then md-files)
   updateNavigation(categories, mdNavItems);
 
+  // Update homepage features
+  updateHomepage(categories);
+
   console.log("✨ Documentation generation complete!\n");
   console.log(`📊 Summary:`);
   console.log(`   - Script categories: ${categories.length}`);
   console.log(`   - MD categories: ${mdNavItems.length}`);
   console.log(`   - Total scripts: ${Object.values(sidebarConfig).reduce((sum, cat) => sum + cat[0].items.length, 0)}`);
   console.log(`   - Total MD files: ${Object.values(mdSidebarConfig).reduce((sum, cat) => sum + cat[0].items.length, 0)}`);
+}
+
+/**
+ * Update homepage features section based on current script categories
+ * @param {Array} categories - List of script category names
+ */
+function updateHomepage(categories) {
+  const homePath = path.join(DOCS_DIR, "index.md");
+  const content = fs.readFileSync(homePath, "utf-8");
+
+  // Build features list sorted by config order
+  const features = categories
+    .map((cat) => {
+      const categoryPath = path.join(SCRIPT_FILES_DIR, cat);
+      const config = loadCategoryConfig(categoryPath);
+      return { cat, config };
+    })
+    .sort((a, b) => (a.config.order || 0) - (b.config.order || 0))
+    .map(({ cat, config }) => {
+      const icon = config.icon || "📄";
+      const title = config.title.replace(/ Scripts$/, "");
+      const description = config.description || `Scripts in the ${cat} category`;
+      return `  - icon: ${icon}\n    title: ${title}\n    details: ${description}\n    link: /${cat}/`;
+    });
+
+  const featuresBlock = `features:\n${features.join("\n")}`;
+
+  // Replace the existing features block (from "features:" up to the closing "---")
+  const updated = content.replace(/features:[\s\S]*?(?=\n---)/m, featuresBlock);
+
+  if (updated !== content) {
+    fs.writeFileSync(homePath, updated);
+    console.log("📝 Updated homepage features");
+  }
 }
 
 /**
@@ -640,7 +677,7 @@ function updateNavigation(categories, mdNavItems = []) {
       { text: "Home", link: "/" },
       {
         text: "Scripts",
-        items: scriptNavItems.map(({ text, link }) => ({ text, link })),
+        items: scriptNavItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(({ text, link }) => ({ text, link })),
       },
       {
         text: "Documentation",

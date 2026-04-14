@@ -34,6 +34,10 @@ features:
     title: Database
     details: Database utilities, SQL scripts, and data management tools
     link: /database/
+  - icon: 🐍
+    title: Python
+    details: Python automation scripts, utilities, and tools for system administration and development workflows
+    link: /python/
 ---
 
 ## Why This Collection?
