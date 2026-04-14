@@ -1,65 +1,75 @@
 # Scripts Collection
 
-> A curated collection of production-ready scripts and code examples for modern web development
+> A curated collection of production-ready scripts for modern development workflows
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Documentation](https://img.shields.io/badge/docs-live-brightgreen.svg)](https://scripts.aceapp.dev/)
 
 ## 📖 About
 
-This repository contains a carefully curated collection of practical scripts, utilities, and code examples designed to solve real-world development challenges. Each script is documented, tested, and ready to use in your projects.
+Practical, documented scripts that solve real-world development problems. Each script follows a standardized format with metadata headers, inline comments, and usage examples.
 
 ## 🌐 Documentation
 
 Browse the complete collection with syntax highlighting, search, and categorization:
 
-- 🚀 **Primary**: [GitHub Pages](https://scripts.aceapp.dev/scripts/)
-- ⚡ **Mirror**: Cloudflare Pages (faster for global access)
+- 🚀 **Primary**: [scripts.aceapp.dev](https://scripts.aceapp.dev/)
+- ⚡ **Mirror**: Cloudflare Pages (faster global access)
 
-## 📂 Categories
+## 📂 Scripts
 
-Our scripts are organized into focused categories:
+### 🎨 Javascript
 
-### 🎨 Frontend
+| Script | Description |
+|--------|-------------|
+| `intercept-requests.js` | Intercepts and redirects Decap CMS authentication requests to local development server |
+| `react-select-auto-selector.js` | Automatically selects options in React Select dropdowns with priority for "Edit" options |
 
-React components, DOM manipulation, browser utilities, and UI patterns
+### ⚙️ Node.js
 
-- Decap CMS authentication interceptor
-- React Select auto-selector for automation
-- _[View all frontend scripts →](https://scripts.aceapp.dev/scripts/frontend/)_
-
-### ⚙️ Backend
-
-Server-side utilities, API helpers, and Node.js tools
-
-- Local development proxy server
-- Authentication middleware
-- _[View all backend scripts →](https://scripts.aceapp.dev/scripts/backend/)_
+| Script | Description |
+|--------|-------------|
+| `local-proxy.js` | Proxy server for Decap CMS with Hugo, handling local authentication |
 
 ### 🔧 Git
 
-Version control automation and repository management
+| Script | Description |
+|--------|-------------|
+| `git-change-all-authors.sh` | Standardize author information across ALL commits in a repository |
+| `git-change-all-authors-fast.sh` | High-performance author standardization for large repositories |
+| `git-change-commit.sh` | Modify author/message for ONE specific commit in Git history |
+| `git-change-pr-authors.sh` | Modify author and committer information for commits in a PR branch |
+| `git-lfs-config-generator.sh` | Generate smart `.gitattributes` configuration for Git LFS based on file sizes |
+| `git-squash-to-single-commit.sh` | Create a fresh repository with a single commit, preserving current state |
+| `git-submodules.sh` | Complete toolkit for managing Git submodules with bulk operations |
 
-- Smart Git LFS configuration generator
-- Submodules management toolkit
-- _[View all git tools →](https://scripts.aceapp.dev/scripts/git/)_
+### ⚡ Serverless
 
-### 📦 Node.js
+| Script | Description |
+|--------|-------------|
+| `cloudflare-setup.js` | Automated setup tool for Cloudflare Workers resources (KV, R2, D1, Secrets) |
 
-Development tools, build utilities, and infrastructure scripts
+### 🗄️ Database
 
-- Cloudflare Workers environment setup
-- Package management helpers
-- _[View all Node.js scripts →](https://scripts.aceapp.dev/scripts/node/)_
+| Script | Description |
+|--------|-------------|
+| `setup-supabase-db.sh` | Interactive script to create a dedicated database and user in Supabase PostgreSQL |
+
+### 🐍 Python
+
+| Script | Description |
+|--------|-------------|
+| `git-clean-ignored.py` | Scan a directory for Git repos and clean all gitignored files, safely |
+| `git-lfs-auto.py` | Scan a directory for large files and register them with Git LFS |
+| `git-status-all.py` | Check Git status for every repository under a root directory |
+
+### 🔑 Utilities
+
+| Script | Description |
+|--------|-------------|
+| `chmod.sh` | Recursively set execute permissions for all shell scripts |
 
 ## 🚀 Quick Start
-
-### Using Scripts
-
-1. Browse the [documentation site](https://scripts.aceapp.dev/scripts/)
-2. Find a script that solves your problem
-3. Copy the code or download the file
-4. Follow the usage instructions in the script header
 
 ### Local Development
 
@@ -69,36 +79,50 @@ git clone https://github.com/ropean/scripts.git
 cd scripts
 
 # Install dependencies
-npm install
+pnpm install
 
 # Generate documentation
-npm run generate
+pnpm run generate
 
 # Start development server
-npm run docs:dev
+pnpm dev
 
 # Build for production
-npm run docs:build
+pnpm build
 ```
+
+> **Requires**: [pnpm](https://pnpm.io/) — install with `npm install -g pnpm`
 
 ## ✍️ Contributing Scripts
 
-We welcome high-quality contributions! Here's how to add a new script:
+### 1. Place Your Script
 
-### 1. Choose the Right Category
+Put it in the matching category under `script-files/`:
 
-Place your script in the appropriate directory:
+```
+script-files/
+├── javascript/   # Browser & UI scripts
+├── nodejs/       # Server-side & Node.js tools
+├── git/          # Version control automation
+├── serverless/   # Cloudflare Workers, AWS Lambda, etc.
+├── database/     # DB utilities and SQL scripts
+└── python/       # Python automation & utilities
+```
 
-- `frontend/` - Browser and UI-related scripts
-- `backend/` - Server-side and Node.js scripts
-- `git/` - Version control tools
-- `node/` - Build tools and utilities
+Create a new directory if none of the above fit, then add a `.config.js` alongside it:
 
-Or create a new category directory if needed.
+```javascript
+module.exports = {
+  title: "Category Title",
+  description: "Brief description of this category",
+  icon: "🎯",
+  order: 70, // controls display order
+};
+```
 
-### 2. Follow the Script Format
+### 2. Add a Metadata Header
 
-Every script must include a standardized header with `@tags`:
+**JavaScript / Node.js:**
 
 ```javascript
 /**
@@ -107,8 +131,7 @@ Every script must include a standardized header with `@tags`:
  * @version 1.0.0
  * @author Your Name
  *
- * Detailed explanation of what this script does,
- * how it works, and when to use it.
+ * Detailed explanation of what this script does and when to use it.
  *
  * @example
  * node your-script.js
@@ -118,151 +141,99 @@ Every script must include a standardized header with `@tags`:
  */
 ```
 
-For shell scripts:
+**Shell / Bash:**
 
 ```bash
 #!/bin/bash
-
 # @title Your Script Title
 # @description Brief one-line description
 # @version 1.0.0
 # @author Your Name
 #
-# Detailed explanation here
-#
 # @example
 # ./your-script.sh
 ```
 
-📚 See [.script-template.md](./.script-template.md) for complete format specification.
+**Python:**
 
-### 3. Add Category Configuration (if new category)
+```python
+#!/usr/bin/env python3
+"""
+@title Your Script Title
+@description Brief one-line description
+@version 1.0.0
+@author Your Name
 
-Create `.config.js` in your category directory:
-
-```javascript
-module.exports = {
-  title: "Category Title",
-  description: "Brief description of this category",
-  icon: "🎯", // Choose an appropriate emoji
-};
+@example
+python your-script.py
+"""
 ```
 
-### 4. Test and Submit
+See [Script Format Specification](/help/script-template) for the full reference.
+
+### 3. Generate & Verify
 
 ```bash
-# Generate docs to verify formatting
-npm run generate
+pnpm run generate   # rebuilds docs, sidebar, nav, and homepage
+pnpm dev            # preview locally
+```
 
-# Build to ensure no errors
-npm run docs:build
+### 4. Submit
 
-# Commit your changes
-git add .
-git commit -m "Add: your script description"
-
-# Create pull request to 'release' branch
+```bash
+git add script-files/<category>/your-script.*
+git commit -m "Add: brief description"
+# open a pull request targeting the release branch
 ```
 
 ## 🏗️ Project Structure
 
-```text
+```
 scripts/
-├── .script-template.md       # Script format specification
-├── frontend/                 # Frontend scripts
-│   ├── .config.js            # Category configuration
-│   └── *.js                 # Script files
-├── backend/                  # Backend scripts
-├── git/                      # Git tools
-├── node/                     # Node.js utilities
-├── docs/                     # VitePress documentation
+├── script-files/             # All scripts, organized by category
+│   ├── javascript/
+│   ├── nodejs/
+│   ├── git/
+│   ├── serverless/
+│   ├── database/
+│   └── python/
+├── md-files/                 # Hand-written documentation pages
+├── docs/                     # VitePress site (auto-generated)
 │   ├── .vitepress/
-│   │   ├── config.mjs       # Site configuration
-│   │   ├── sidebar.json     # Auto-generated sidebar
-│   │   └── nav.json         # Auto-generated navigation
+│   │   ├── config.mjs        # Site configuration
+│   │   ├── sidebar.json      # Auto-generated sidebar
+│   │   └── nav.json          # Auto-generated navigation
+│   ├── index.md              # Homepage (auto-generated features)
 │   └── public/
-│       └── logo.svg         # Site logo
 ├── scripts/
-│   └── generate-docs.js     # Documentation generator
-└── .github/workflows/       # CI/CD pipelines
+│   ├── generate-docs.js      # Main doc generator
+│   ├── generate-features.js  # Feature flags generator
+│   └── generate-robots.mjs   # robots.txt generator
+└── .github/workflows/        # CI/CD pipelines
 ```
 
 ## 🔧 Documentation System
 
-The documentation is automatically generated from script files:
+`pnpm run generate` does everything automatically:
 
-1. **Dynamic Scanning**: Automatically discovers all category directories
-2. **Metadata Extraction**: Parses `@tags` from script headers
-3. **Markdown Generation**: Creates individual pages for each script
-4. **Navigation Updates**: Dynamically builds sidebar and nav menus
-5. **SEO Optimization**: Adds meta tags and sitemaps
-6. **Build Optimization**: Minifies and compresses output
+1. Scans all `script-files/` category directories
+2. Extracts `@tags` metadata from each script header
+3. Generates individual markdown pages per script
+4. Rebuilds sidebar, navigation, and **homepage features** to match current categories
+5. Sorts all navigation by the `order` field in `.config.js`
 
 ## 🌍 Deployment
 
-### GitHub Pages (Default)
+| Target | Branch | URL |
+|--------|--------|-----|
+| GitHub Pages | `release` | [scripts.aceapp.dev](https://scripts.aceapp.dev/) |
+| Cloudflare Pages | `release` | Mirror (faster global CDN) |
 
-Automatically deploys on push to `release` branch via GitHub Actions.
-
-**URL**: <https://scripts.aceapp.dev/scripts/>
-
-### Cloudflare Pages (Alternative)
-
-Faster global access with unlimited bandwidth.
-
-**Setup**: See [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md)
-
-Both deployments can run simultaneously for redundancy.
-
-## 📋 Script Format Features
-
-Our standardized format ensures consistency and discoverability:
-
-- **Required Tags**: `@title`, `@description`
-- **Optional Tags**: `@author`, `@version`, `@example`, `@requires`, `@note`, `@see`
-- **Auto-generated**:
-  - Syntax highlighting
-  - Category classification
-  - Metadata sections
-  - GitHub source links
-
-## 🎯 Quality Standards
-
-All scripts in this repository follow these principles:
-
-✅ **Production-Ready**: Tested and reliable code
-✅ **Well-Documented**: Clear headers and inline comments
-✅ **Self-Contained**: Minimal external dependencies
-✅ **Best Practices**: Modern JavaScript/Bash conventions
-✅ **Practical**: Solves real-world problems
-
-## 🤝 Contributing
-
-Contributions are welcome! Please:
-
-1. Read the [script format specification](./.script-template.md)
-2. Ensure your code follows best practices
-3. Add comprehensive documentation
-4. Test locally before submitting
-5. Submit PR to the `release` branch
+Both run automatically via GitHub Actions on push to `release`.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-Built with:
-
-- [VitePress](https://vitepress.dev/) - Documentation framework
-- [GitHub Actions](https://github.com/features/actions) - CI/CD
-- [Cloudflare Pages](https://pages.cloudflare.com/) - Fast global deployment
-
-## 📬 Contact
-
-- **Issues**: [GitHub Issues](https://github.com/ropean/scripts/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/ropean/scripts/discussions)
-- **Website**: [ropean.org](https://ropean.org/)
+MIT — see [LICENSE](./LICENSE) for details.
 
 ---
 
