@@ -84,6 +84,7 @@ function extractMetadata(filePath) {
   };
 
   let inHeaderBlock = false;
+  let headerType = ""; // "triple-quote", "jsdoc", "hash"
   let headerLines = [];
 
   // Extract header block
@@ -96,20 +97,38 @@ function extractMetadata(filePath) {
     }
 
     // Detect start of header block
-    if (!inHeaderBlock && (line.startsWith("/**") || line.startsWith('"""') || line.startsWith("#"))) {
-      inHeaderBlock = true;
-      headerLines.push(line);
+    if (!inHeaderBlock) {
+      if (line.startsWith('"""') || line.startsWith("'''")) {
+        inHeaderBlock = true;
+        headerType = "triple-quote";
+        headerLines.push(line);
+        // Single-line docstring on same line (e.g. """text""")
+        if (line.length > 3 && (line.endsWith('"""') || line.endsWith("'''"))) break;
+        continue;
+      } else if (line.startsWith("/**")) {
+        inHeaderBlock = true;
+        headerType = "jsdoc";
+        headerLines.push(line);
+        if (line.includes("*/")) break;
+        continue;
+      } else if (line.startsWith("#")) {
+        inHeaderBlock = true;
+        headerType = "hash";
+        headerLines.push(line);
+        continue;
+      }
       continue;
     }
 
-    // In header block
-    if (inHeaderBlock) {
-      headerLines.push(line);
+    // In header block — detect end based on block type
+    headerLines.push(line);
 
-      // Detect end of header block
-      if (line.includes("*/") || line.includes('"""') || (!line.startsWith("#") && !line.startsWith("*") && line.length > 0)) {
-        break;
-      }
+    if (headerType === "triple-quote") {
+      if (line.includes('"""') || line.includes("'''")) break;
+    } else if (headerType === "jsdoc") {
+      if (line.includes("*/")) break;
+    } else if (headerType === "hash") {
+      if (!line.startsWith("#") && line.length > 0) break;
     }
   }
 
