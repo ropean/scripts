@@ -1,98 +1,226 @@
-# Dependencies
+# ════════════════════════════════════════════════════════════
+#  OS — cross-platform
+# ════════════════════════════════════════════════════════════
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ════════════════════════════════════════════════════════════
+#  EDITORS & IDEs
+# ════════════════════════════════════════════════════════════
+
+# VS Code (keep extensions recommendation)
+.vscode/*
+!.vscode/extensions.json
+
+# JetBrains (IntelliJ, PyCharm, WebStorm…)
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Vim / Neovim
+*.swp
+*.swo
+*.swn
+Session.vim
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Windows Visual Studio
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ════════════════════════════════════════════════════════════
+#  NODE / JS / TS
+# ════════════════════════════════════════════════════════════
+
 node_modules/
+.pnp
+.pnp.js
+.pnp.cjs
+
+# Lock files — keep pnpm-lock.yaml (this repo uses pnpm)
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
-.pnp.*
+bun.lockb
 
 # Build output
 dist/
 build/
+out/
 .next/
 .nuxt/
-.cache/
+.svelte-kit/
+.turbo/
+.parcel-cache/
+*.tsbuildinfo
+
+# VitePress
 .temp/
-.tmp/
-.temp/
 .cache/
-.vercel/
-.netlify/
-.out/
-.serverless/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+docs/.vitepress/.temp/
 
-# Build output
-docs/
-!docs/.vitepress/config.mjs
-!docs/public
-!docs/index.md
-!docs/README.md
-# docs/.vitepress/dist
-# docs/.vitepress/cache
-# docs/.vitepress/.temp
-
-# Generated docs
-# docs/frontend/*.md
-# docs/backend/*.md
-# docs/git/*.md
-# docs/node/*.md
-# !docs/frontend/index.md
-# !docs/backend/index.md
-# !docs/git/index.md
-# !docs/node/index.md
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-$RECYCLE.BIN/
-
-# Environment variables
-.env
-.env.local
-.env.development
-.env.test
-.env.production
+# Test coverage
+coverage/
+.nyc_output/
 
 # Debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+lerna-debug.log*
 
-# Coverage directory
-coverage/
-.nyc_output/
+# ════════════════════════════════════════════════════════════
+#  PYTHON
+# ════════════════════════════════════════════════════════════
 
-# Misc
-.DS_Store
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+**/__pycache__/
+*.py[cod]
+*$py.class
 
-# Local development
-.vercel
-.netlify
-.idea/
-.vscode/*
-!.vscode/extensions.json
-.idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+# Distribution / packaging
+*.egg-info/
+*.egg
+*.whl
+MANIFEST
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+.python-version
+uv.lock
+poetry.lock
+Pipfile.lock
 
-# Logs
+# Type checkers & linters
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+
+# Pytest / coverage
+.pytest_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ════════════════════════════════════════════════════════════
+#  SHELL SCRIPTS — runtime artifacts
+# ════════════════════════════════════════════════════════════
+
 *.log
-npm-debug.log*
+*.out
+*.tmp
+*.temp
+*.bak
+*.orig
+reports/
+output/
 
-.wrangler
+# ════════════════════════════════════════════════════════════
+#  ENVIRONMENT & SECRETS
+# ════════════════════════════════════════════════════════════
+
+.env
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars
+.dev.vars.*
+!.dev.vars.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# ════════════════════════════════════════════════════════════
+#  CLOUD / SERVERLESS
+# ════════════════════════════════════════════════════════════
+
+.wrangler/
+wrangler.toml.local
+.vercel/
+.netlify/
+.serverless/
+cdk.out/
+.aws-sam/
+
+# ════════════════════════════════════════════════════════════
+#  DATABASE SCRIPTS — artifacts
+# ════════════════════════════════════════════════════════════
+
+*.sqlite
+*.sqlite3
+*.db
+*.db-shm
+*.db-wal
+dump.sql
+*.dump
+
+# ════════════════════════════════════════════════════════════
+#  GENERATED DOCS (scripts/generate-docs.js)
+# ════════════════════════════════════════════════════════════
+#
+# "docs/" cannot be used here — git won't recurse into an ignored
+# directory, so negations below it would silently do nothing.
+# "docs/**" ignores contents while leaving the directory traversable,
+# which allows the negations to work correctly.
+
+docs/**
+
+# Re-include the .vitepress/ directory so git traverses into it …
+!docs/.vitepress/
+# … then re-ignore its build/cache output inside it
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+docs/.vitepress/.temp/
+# … and keep only the config source file
+!docs/.vitepress/config.mjs
+
+# Re-include static assets
+!docs/public/
+!docs/public/**
+
+# Re-include hand-maintained root docs
+!docs/index.md
+!docs/README.md
+
+.claude/settings.local.json
