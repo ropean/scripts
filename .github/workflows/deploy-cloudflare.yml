@@ -3,7 +3,8 @@ name: Deploy to Cloudflare Pages
 on:
   push:
     branches:
-      - release # Trigger on release branch updates
+      - release
+      - release*
   workflow_dispatch: # Allow manual trigger
 
 permissions:
@@ -27,10 +28,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v5
+        with:
+          version: latest
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
