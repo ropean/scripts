@@ -46,5 +46,5 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy docs/.vitepress/dist --project-name=scripts
+          command: pages deploy docs/.vitepress/dist --project-name=scripts --branch=main
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
