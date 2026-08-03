@@ -1,0 +1,13 @@
+/* Add a "GitHub" text label next to the icon in the collapsed ("...")
+   nav flyout on medium screens, matching the "Appearance" label above it:
+   same .label styling (font-size/weight/color from VPMenu's :deep(.label)
+   rule), and flex-grow:1 so it pushes the icon to the right, same as the
+   Appearance row pushes its switch to the right. */
+.VPNavBarExtra .item.social-links::before {
+  content: "GitHub";
+  flex-grow: 1;
+  line-height: 28px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--vp-c-text-2);
+}

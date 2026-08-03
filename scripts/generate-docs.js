@@ -685,23 +685,22 @@ function updateNavigation(categories, mdNavItems = []) {
   const allNavItems = [...scriptNavItems, ...mdNavItems].sort((a, b) => (a.order || 0) - (b.order || 0));
 
   // Determine navigation structure based on number of items
+  // MD items (Help, etc.) are always flat top-level links, never dropdowns.
+  // Scripts collapse into a "Scripts" dropdown once there are too many to fit flat.
   let navItems;
 
   if (allNavItems.length <= 6) {
     // Simple flat navigation for small number of items
     navItems = [{ text: "Home", link: "/" }, ...allNavItems.map(({ text, link }) => ({ text, link }))];
   } else {
-    // Grouped navigation for many items
+    // Group scripts once there are too many; MD items stay flat
     navItems = [
       { text: "Home", link: "/" },
       {
         text: "Scripts",
         items: scriptNavItems.sort((a, b) => (a.order || 0) - (b.order || 0)).map(({ text, link }) => ({ text, link })),
       },
-      {
-        text: "Documentation",
-        items: mdNavItems.map(({ text, link }) => ({ text, link })),
-      },
+      ...mdNavItems.map(({ text, link }) => ({ text, link })),
     ];
   }
 

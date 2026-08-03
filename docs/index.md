@@ -38,6 +38,10 @@ features:
     title: Python
     details: Python automation scripts, utilities, and tools for system administration and development workflows
     link: /python/
+  - icon: 🐚
+    title: Bash
+    details: Bash and shell scripts for WSL, filesystem cleanup, and cross-platform automation
+    link: /bash/
 ---
 
 ## Why This Collection?

@@ -215,6 +215,10 @@ docs/.vitepress/.temp/
 # … and keep only the config source file
 !docs/.vitepress/config.mjs
 
+# … and the custom theme source (hand-written, not generated)
+!docs/.vitepress/theme/
+!docs/.vitepress/theme/**
+
 # Re-include static assets
 !docs/public/
 !docs/public/**
